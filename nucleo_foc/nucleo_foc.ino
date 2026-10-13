@@ -18,6 +18,9 @@
 //   v<rpm>      speed control                     p<deg>    go to an angle and hold
 //   s           hold the present position         x         outputs off and stop
 //   c0 / c1     cogging and friction feed-forward off / on
+//   C           scan the cogging torque over one full turn each way (about
+//               35 s), use the result as the feed-forward table and store it
+//               in the board's flash, where it survives resets and uploads
 //   P K I       position gain, speed gain, speed integral gain
 //   B<hz>       current-loop bandwidth            D<volts>  dead-time compensation
 //   t           measure how fast the motor accelerates per amp, then set
@@ -29,8 +32,9 @@
 // B and O are refused below 5 times the speed-loop bandwidth, and W above a
 // fifth of either: a speed loop that outruns what it relies on goes unstable.
 //
-// Wiring: as nucleo_check, with the motor on MOTA/B/C. Type 'g' to start.
+// Wiring: see README.md, with the motor on MOTA/B/C. Type 'g' to start.
 
+#include <EEPROM.h>
 #include <math.h>
 
 // ---------------------------------------------------------------- pins
@@ -126,9 +130,16 @@ const float DEFAULT_OBSERVER_BANDWIDTH_HZ = 250.0f;
 const float MINIMUM_INNER_RATIO = 5.0f;
 const float FRICTION_AMPS = 0.5f;        // feed-forward in the direction of requested motion
 
-// Cogging feed-forward: q current that balances the cogging torque, as
-// harmonics of the absolute shaft angle. Measured with drv8305_cogging_scan on
-// the Uno; tied to the encoder magnet's mounting.
+// Cogging feed-forward: q current that balances the cogging torque at each
+// shaft angle. The 'C' command measures it into a table of COGGING_BINS
+// entries per turn and stores it in flash. If no stored table is found at
+// startup, this harmonic model from the Uno (drv8305_cogging_scan) is used
+// instead. Both are tied to the encoder magnet's mounting.
+const uint32_t COGGING_STORE_MAGIC = 0x31474F43;  // "COG1", marks a stored table
+const uint16_t COGGING_BINS = 2048;
+const uint8_t COGGING_BIN_SHIFT = 3;   // 16384 counts / 2048 bins = 8 counts per bin
+const float SCAN_RPM = 4.0f;
+const float SCAN_DEGREES = 380.0f;     // one turn plus a margin, each way
 struct CoggingHarmonic {
   uint16_t cyclesPerTurn;
   float cosAmps;
@@ -198,6 +209,15 @@ volatile Trip tripReason = NO_TRIP;
 
 uint32_t pwmTop;  // timer counts from zero to peak
 float sineTable[256];
+
+// Measured cogging table: q amps, electrical-positive, indexed by shaft angle.
+float coggingTable[COGGING_BINS];
+volatile bool coggingTableValid;
+// Scan accumulators: the speed loop's own torque request, by angle bin, for
+// the forwards (0) and backwards (1) passes.
+volatile int8_t scanLeg = -1;          // -1 when not scanning
+float scanSum[2][COGGING_BINS];
+uint16_t scanCount[2][COGGING_BINS];
 
 // Encoder calibration, from the 'a' command. These stored values hold only
 // while the motor wires stay on the same terminals and the encoder magnet is
@@ -300,14 +320,24 @@ static inline float tableSine(uint32_t index) {
   return sineTable[index & 255];
 }
 
-// Feed-forward q current for a raw encoder reading, before applying the direction sign.
+// Feed-forward q current, electrical-positive, for a raw encoder reading.
 static inline float coggingAmps(uint16_t raw) {
+  if (coggingTableValid) {
+    // Each bin holds the average over its 8 counts, so its value belongs to
+    // the middle of that span; interpolate between neighbouring bins.
+    uint32_t shifted = (raw + ENCODER_COUNTS - (1u << (COGGING_BIN_SHIFT - 1))) & (ENCODER_COUNTS - 1);
+    uint32_t bin = shifted >> COGGING_BIN_SHIFT;
+    float fraction = (shifted & ((1u << COGGING_BIN_SHIFT) - 1)) * (1.0f / (1u << COGGING_BIN_SHIFT));
+    float here = coggingTable[bin];
+    float next = coggingTable[(bin + 1) & (COGGING_BINS - 1)];
+    return here + fraction * (next - here);
+  }
   float sum = 0;
   for (const CoggingHarmonic &harmonic : COGGING) {
     uint32_t index = ((uint32_t)raw * harmonic.cyclesPerTurn % ENCODER_COUNTS) >> 6;
     sum += harmonic.cosAmps * tableSine(index + 64) + harmonic.sinAmps * tableSine(index);
   }
-  return sum;
+  return direction * sum;
 }
 
 static inline float clampf(float value, float limit) {
@@ -456,10 +486,15 @@ extern "C" void ADC_IRQHandler(void) {
       float unclamped = speedKp * error + speedIntegral;
       if (fabsf(unclamped) < TARGET_LIMIT_AMPS || unclamped * error < 0) speedIntegral += speedKi * error / OUTER_HZ;
       q = clampf(speedKp * error + speedIntegral, TARGET_LIMIT_AMPS);
-      if (feedForwardEnabled) q += direction * coggingAmps(raw) + FRICTION_AMPS * clampf(targetRpm, 1.0f);
+      if (scanLeg >= 0) {
+        uint16_t bin = raw >> COGGING_BIN_SHIFT;
+        scanSum[scanLeg][bin] += q;
+        if (scanCount[scanLeg][bin] < 0xFFFF) scanCount[scanLeg][bin]++;
+      }
+      if (feedForwardEnabled) q += coggingAmps(raw) + FRICTION_AMPS * clampf(targetRpm, 1.0f);
     } else {
       speedIntegral = 0;
-      if (mode == TORQUE && feedForwardEnabled) q += direction * coggingAmps(raw);
+      if (mode == TORQUE && feedForwardEnabled) q += coggingAmps(raw);
     }
     q = clampf(q, TARGET_LIMIT_AMPS);
     // Braking returns power 1.5 * (|q| * bemf - R * q^2) to the bus. Cap the
@@ -920,6 +955,174 @@ void autoTune() {
   printTuning();
 }
 
+// ---------------------------------------------------------------- cogging table storage
+// The table is kept in the core's emulated EEPROM (a flash sector that
+// program uploads leave alone): a 4-byte marker, then one 16-bit value in
+// milliamps per bin.
+bool loadCoggingTable() {
+  (void)EEPROM;  // only the library's buffered functions are used, not its EEPROM object
+  eeprom_buffer_fill();
+  uint32_t magic = 0;
+  for (uint8_t i = 0; i < 4; i++) magic |= (uint32_t)eeprom_buffered_read_byte(i) << (8 * i);
+  if (magic != COGGING_STORE_MAGIC) return false;
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    uint16_t word = eeprom_buffered_read_byte(4 + 2 * bin) | (uint16_t)eeprom_buffered_read_byte(5 + 2 * bin) << 8;
+    coggingTable[bin] = (int16_t)word * 0.001f;
+  }
+  coggingTableValid = true;
+  return true;
+}
+
+// Writing flash stalls the processor for up to a couple of seconds, so the
+// motor is first brought to idle with the outputs released and the control
+// interrupt paused.
+void storeCoggingTable() {
+  noInterrupts();
+  bool running = mode != TRIPPED;
+  if (running) mode = IDLE;
+  interrupts();
+  if (!running) return;
+  delay(300);
+  outputsOff();
+  HAL_NVIC_DisableIRQ(ADC_IRQn);
+
+  eeprom_buffer_fill();
+  for (uint8_t i = 0; i < 4; i++) eeprom_buffered_write_byte(i, (uint8_t)(COGGING_STORE_MAGIC >> (8 * i)));
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    int16_t milliamps = (int16_t)constrain(lroundf(coggingTable[bin] * 1000.0f), -32000L, 32000L);
+    eeprom_buffered_write_byte(4 + 2 * bin, (uint8_t)(milliamps & 0xFF));
+    eeprom_buffered_write_byte(5 + 2 * bin, (uint8_t)((uint16_t)milliamps >> 8));
+  }
+  eeprom_buffer_flush();
+
+  HAL_NVIC_EnableIRQ(ADC_IRQn);
+  delay(5);
+  TIM1->BDTR |= TIM_BDTR_MOE;
+  Serial.println(F("table stored in flash; motor idle (use s, v or p to continue)"));
+}
+
+// ---------------------------------------------------------------- cogging scan
+// Turns the shaft slowly at constant speed, one full turn each way, with the
+// feed-forward off, and records the torque current the speed loop needs at
+// each angle. Cogging is the same in both directions and friction reverses,
+// so the average of the two passes is the cogging alone.
+void scanCogging() {
+  if (mode == TRIPPED) return;
+  if (fabsf(rpm) > 5.0f) {
+    Serial.println(F("stop the motor first (s), then run 'C' again"));
+    return;
+  }
+  Serial.println(F("scanning cogging: about 35 s, one slow turn each way"));
+  bool savedFeedForward = feedForwardEnabled;
+  feedForwardEnabled = false;
+  for (uint8_t leg = 0; leg < 2; leg++) {
+    for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+      scanSum[leg][bin] = 0;
+      scanCount[leg][bin] = 0;
+    }
+  }
+
+  bool completed = true;
+  for (uint8_t leg = 0; leg < 2 && completed; leg++) {
+    noInterrupts();
+    targetD = 0;
+    targetQ = 0;
+    targetRpm = leg == 0 ? SCAN_RPM : -SCAN_RPM;
+    if (mode != TRIPPED) mode = SPEED;
+    interrupts();
+    delay(700);  // reach speed before recording
+    float startDegrees = shaftDegrees;
+    uint32_t startMillis = millis();
+    scanLeg = leg;
+    while (fabsf(shaftDegrees - startDegrees) < SCAN_DEGREES) {
+      if (mode == TRIPPED || millis() - startMillis > 40000) {
+        completed = false;
+        break;
+      }
+      delay(5);
+    }
+    scanLeg = -1;
+  }
+  noInterrupts();
+  if (mode != TRIPPED) targetRpm = 0;
+  interrupts();
+  feedForwardEnabled = savedFeedForward;
+  if (mode == TRIPPED) return;
+  if (!completed) {
+    Serial.println(F("scan REJECTED: the shaft did not complete the turn in time"));
+    return;
+  }
+
+  // Per bin: cogging = mean of the two passes, friction = half their difference.
+  uint16_t missing = 0;
+  float friction = 0;
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    if (scanCount[0][bin] == 0 || scanCount[1][bin] == 0) {
+      missing++;
+      continue;
+    }
+    friction += 0.5f * (scanSum[0][bin] / scanCount[0][bin] - scanSum[1][bin] / scanCount[1][bin]);
+  }
+  if (missing > COGGING_BINS / 50) {
+    Serial.print(F("scan REJECTED: no data for "));
+    Serial.print(missing);
+    Serial.println(F(" angle bins"));
+    return;
+  }
+  friction /= (COGGING_BINS - missing);
+
+  // Reuse scanSum[0] for the result and scanSum[1] for the pass-to-pass disagreement.
+  float last = 0;
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    if (scanCount[0][bin] == 0 || scanCount[1][bin] == 0) {
+      scanSum[0][bin] = last;  // rare gap: repeat the neighbouring value
+      scanSum[1][bin] = 0;
+      continue;
+    }
+    float forwards = scanSum[0][bin] / scanCount[0][bin];
+    float backwards = scanSum[1][bin] / scanCount[1][bin];
+    last = scanSum[0][bin] = 0.5f * (forwards + backwards);
+    scanSum[1][bin] = 0.5f * (forwards - backwards) - friction;
+  }
+
+  // Light smoothing (weights 1-2-1 around the circle), then publish.
+  float sumSquares = 0, disagreement = 0, peak = 0;
+  float first = scanSum[0][0];
+  float previous = scanSum[0][COGGING_BINS - 1];
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    float here = scanSum[0][bin];
+    float next = bin + 1 < COGGING_BINS ? scanSum[0][bin + 1] : first;
+    float smoothed = 0.25f * previous + 0.5f * here + 0.25f * next;
+    previous = here;
+    sumSquares += smoothed * smoothed;
+    disagreement += scanSum[1][bin] * scanSum[1][bin];
+    if (fabsf(smoothed) > peak) peak = fabsf(smoothed);
+    noInterrupts();
+    coggingTable[bin] = smoothed;
+    interrupts();
+  }
+  coggingTableValid = true;
+
+  Serial.print(F("friction at "));
+  Serial.print(SCAN_RPM, 0);
+  Serial.print(F(" rpm (A): "));
+  Serial.println(friction, 2);
+  Serial.print(F("cogging, RMS / peak (A): "));
+  Serial.print(sqrtf(sumSquares / COGGING_BINS), 2);
+  Serial.print(F(" / "));
+  Serial.println(peak, 2);
+  Serial.print(F("disagreement between the two passes, RMS (A): "));
+  Serial.println(sqrtf(disagreement / COGGING_BINS), 2);
+  Serial.println(F("Values in mA, 16 per row:"));
+  Serial.println(F("COGGING TABLE BEGIN"));
+  for (uint16_t bin = 0; bin < COGGING_BINS; bin++) {
+    Serial.print((int)lroundf(coggingTable[bin] * 1000.0f));
+    Serial.print((bin + 1) % 16 == 0 ? '\n' : ' ');
+  }
+  Serial.println(F("COGGING TABLE END"));
+  storeCoggingTable();
+}
+
 // ---------------------------------------------------------------- commands
 // Reads one command line from the Serial Monitor without blocking.
 void handleSerial() {
@@ -938,6 +1141,7 @@ void handleSerial() {
 
     if (command == 'x') shutDown();
     if (command == 'a') calibrateEncoder();
+    if (command == 'C' && encoderCalibrated) scanCogging();
     if (command == 't' && encoderCalibrated) autoTune();
     if (command == 'm') {
       int rows = constrain((int)value, 0, 20);
@@ -1025,6 +1229,8 @@ void setup() {
   delay(100);
 
   Serial.println(F("\n--- Nucleo FOC ---"));
+  Serial.println(loadCoggingTable() ? F("cogging table: loaded from flash")
+                                    : F("cogging table: none stored, using the Uno harmonic model (run C to measure)"));
   writeDriver(REG_GATE_DRIVE, GATE_DRIVE_PWM_3X);
   writeDriver(REG_SHUNT_AMP, SHUNT_AMP_GAIN_10);
   writeDriver(REG_HS_GATE_DRIVE, GATE_DRIVE_STRENGTH);
@@ -1075,7 +1281,7 @@ void setup() {
   Serial.print(encoderOffset);
   Serial.print(F(", direction "));
   Serial.println(direction);
-  Serial.println(F("Running. Commands: d q v p s c P K I B D t W R O m x, and a to recalibrate the encoder."));
+  Serial.println(F("Running. Commands: d q v p s c C P K I B D t W R O m x, and a to recalibrate the encoder."));
   Serial.println(F("mode\tdeg*\tdeg\trpm*\trpm\tiq*\tiq\tid\tvq\tbus\tisr us\tdump ms"));
 }
 
