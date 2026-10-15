@@ -1,7 +1,8 @@
 # FOC controller for a 7025 drone motor
 
 Field-oriented control of a 7025 hobby motor (420 kV, 28 poles) with current,
-speed and position loops, running at 20 kHz on an STM32.
+speed and position loops, running at 20 kHz on an STM32, with space-vector
+modulation, planned position moves and a measured cogging-torque table.
 
 ## Hardware
 
@@ -10,7 +11,7 @@ speed and position loops, running at 20 kHz on an STM32.
 | Controller | NUCLEO-F446RE |
 | Driver | BOOSTXL-DRV8305EVM (3-PWM mode, low-side shunts) |
 | Encoder | AS5048A over SPI, powered from 3.3 V |
-| Supply | 12 V mains adapter (cannot absorb braking energy) |
+| Supply | 12 V 10 A mains adapter (cannot absorb braking energy) |
 
 Wiring, Nucleo Arduino-header names:
 
@@ -47,7 +48,7 @@ Clamp the motor, nothing on the shaft, then type `g`.
 
 | Command | Effect |
 |---|---|
-| `p<deg>` | go to an angle and hold it |
+| `p<deg>` | planned move to an angle (accelerate, cruise, brake), then hold; prints the time taken |
 | `v<rpm>` | speed control (up to 1000) |
 | `q<amps>`, `d<amps>` | torque current, and d-axis current (no torque) |
 | `s` | hold the present position |
@@ -71,7 +72,8 @@ the sketch. The cogging table is the exception: it is kept in flash.
 | Back-EMF | about 1.75 mV per rpm (phase amplitude) |
 | Acceleration per amp, bare shaft | 2900 rpm/s per A |
 | Loop bandwidths | current 500 Hz, speed 50 Hz, position 5 Hz |
-| Limits | 12 A target, 18 A trip, 1000 rpm, 2 V phase voltage |
+| Limits | 12 A target, 18 A trip, 1000 rpm, 3 V phase voltage |
+| Planned moves | up to 900 rpm, accelerate 20,000 rpm/s, brake 8,000 rpm/s |
 
 ## When something changes
 

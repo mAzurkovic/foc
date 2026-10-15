@@ -16,6 +16,7 @@
 //               moving the motor wires or the encoder magnet)
 //   d<amps>     d-axis current, no torque         q<amps>   q-axis current (torque)
 //   v<rpm>      speed control                     p<deg>    go to an angle and hold
+//               (p plans the move: accelerate, cruise, brake, arriving at rest)
 //   s           hold the present position         x         outputs off and stop
 //   c0 / c1     cogging and friction feed-forward off / on
 //   C           scan the cogging torque over one full turn each way (about
@@ -86,10 +87,19 @@ const float RPM_TO_ELECTRICAL_RADIANS_PER_SECOND = TWO_PI / 60.0f * POLE_PAIRS;
 // ---------------------------------------------------------------- limits
 const float TARGET_LIMIT_AMPS = 12.0f; // largest d or q target
 const float TRIP_AMPS = 18.0f;         // any phase beyond this switches the outputs off at once
-const float MAX_VOLTS = 2.0f;          // cap on phase voltage amplitude: bounds top speed (about 1100 rpm no-load)
+const float MAX_VOLTS = 3.0f;          // cap on phase voltage amplitude: bounds top speed (about 1600 rpm no-load)
 const float TARGET_LIMIT_RPM = 1000.0f;
-const float POSITION_LIMIT_RPM = 150.0f;
+const float POSITION_LIMIT_RPM = 150.0f;   // most speed the position correction alone may ask for
 const float TRIP_RPM = 1300.0f;
+
+// Planned position moves: accelerate, cruise if there is room, then brake to
+// arrive at rest. Acceleration is about 60 % of what 12 A can do with a bare
+// shaft (2900 rpm/s per A). Braking is set lower because, at speed, braking
+// torque is limited to what the windings can absorb (about 2.5 A at 1000 rpm).
+const float MOVE_MAX_RPM = 900.0f;
+const float MOVE_ACCEL_RPM_PER_SECOND = 20000.0f;
+const float MOVE_DECEL_RPM_PER_SECOND = 8000.0f;
+const float MOVE_SETTLED_DEGREES = 0.5f;   // within this, and nearly stopped, counts as arrived
 // A decelerating motor pushes energy back into the supply. The mains adapter
 // cannot absorb it and shuts down if its output is pushed up, so braking
 // energy is burned in the motor windings instead, as d-axis current, which
@@ -234,6 +244,18 @@ volatile float positionKp, speedKp, speedKi;  // set by applyTuning()
 volatile float observerPositionGain, observerSpeedGain;  // set by setObserverBandwidth()
 volatile float currentKp, currentKiDt;
 volatile float deadtimeVolts = DEFAULT_DEADTIME_VOLTS;
+
+// A planned move, in degrees and seconds, measured along the direction of
+// travel from `start`. Written by the main loop with interrupts off.
+struct Move {
+  bool active;
+  float start, sign, distance;
+  float accel, decel, peak;                 // deg/s^2, deg/s^2, deg/s
+  float accelTime, cruiseTime, decelTime;
+  float accelDistance, cruiseDistance;
+  float time;                               // since the move began
+};
+Move move;
 
 // Measurements, read by the main loop.
 volatile float busVolts = 12.0f;
@@ -475,8 +497,42 @@ extern "C" void ADC_IRQHandler(void) {
       calibrationCos[1] += cosf(backwards);
     }
 
+    float accelerationAmps = 0;  // feed-forward for the planned acceleration
     if (mode == POSITION) {
-      targetRpm = clampf(positionKp * (targetDegrees - shaftDegrees), POSITION_LIMIT_RPM);
+      // Where the plan says the shaft should be right now, how fast it should
+      // be going, and how hard it should be accelerating. The speed loop is fed
+      // the planned speed directly; the position gain only corrects the error.
+      float reference = targetDegrees;
+      float planRpm = 0;
+      if (move.active) {
+        move.time += 1.0f / OUTER_HZ;
+        float t = move.time;
+        float along, speed, acceleration;
+        if (t < move.accelTime) {
+          acceleration = move.accel;
+          speed = move.accel * t;
+          along = 0.5f * move.accel * t * t;
+        } else if (t < move.accelTime + move.cruiseTime) {
+          acceleration = 0;
+          speed = move.peak;
+          along = move.accelDistance + move.peak * (t - move.accelTime);
+        } else if (t < move.accelTime + move.cruiseTime + move.decelTime) {
+          float braking = t - move.accelTime - move.cruiseTime;
+          acceleration = -move.decel;
+          speed = move.peak - move.decel * braking;
+          along = move.accelDistance + move.cruiseDistance + move.peak * braking - 0.5f * move.decel * braking * braking;
+        } else {
+          acceleration = 0;
+          speed = 0;
+          along = move.distance;
+          move.active = false;
+        }
+        reference = move.start + move.sign * along;
+        planRpm = move.sign * speed * (1.0f / 6.0f);                              // deg/s -> rpm
+        accelerationAmps = move.sign * acceleration * (1.0f / 6.0f) / accelerationPerAmp;
+      }
+      float correction = clampf(positionKp * (reference - shaftDegrees), POSITION_LIMIT_RPM);
+      targetRpm = clampf(planRpm + correction, TARGET_LIMIT_RPM);
     }
     float q = targetQ;
     if (mode == SPEED || mode == POSITION) {
@@ -492,6 +548,7 @@ extern "C" void ADC_IRQHandler(void) {
         if (scanCount[scanLeg][bin] < 0xFFFF) scanCount[scanLeg][bin]++;
       }
       if (feedForwardEnabled) q += coggingAmps(raw) + FRICTION_AMPS * clampf(targetRpm, 1.0f);
+      q += accelerationAmps;
     } else {
       speedIntegral = 0;
       if (mode == TORQUE && feedForwardEnabled) q += coggingAmps(raw);
@@ -580,18 +637,25 @@ extern "C" void ADC_IRQHandler(void) {
       -0.5f * voltsAlpha + 0.8660254f * voltsBeta,
       -0.5f * voltsAlpha - 0.8660254f * voltsBeta,
     };
+    // Space-vector modulation: shift all three phases together so the highest
+    // and lowest sit equally far from mid-rail. The motor only sees the
+    // differences, which are unchanged, but the peaks are 13 % smaller, so the
+    // same bus (and the same duty limits) yields 15 % more voltage.
+    float highest = volts[0] > volts[1] ? (volts[0] > volts[2] ? volts[0] : volts[2]) : (volts[1] > volts[2] ? volts[1] : volts[2]);
+    float lowest = volts[0] < volts[1] ? (volts[0] < volts[2] ? volts[0] : volts[2]) : (volts[1] < volts[2] ? volts[1] : volts[2]);
+    float common = -0.5f * (highest + lowest);
 
     float half = 0.5f * pwmTop;
     float perVolt = pwmTop / busVolts;
     float knee = deadtimeVolts / DEADTIME_KNEE_AMPS;
     uint32_t compare[3];
     for (uint8_t phase = 0; phase < 3; phase++) {
-      volts[phase] += clampf(knee * amps[phase], deadtimeVolts);  // dead-time compensation
+      volts[phase] += common + clampf(knee * amps[phase], deadtimeVolts);  // + dead-time compensation
       float value = half + volts[phase] * perVolt;
       // Keep the low-side on-time long enough for the current sample.
-      float lowest = 0.1f * pwmTop;
-      float highest = 0.8f * pwmTop;
-      compare[phase] = (uint32_t)(value < lowest ? lowest : (value > highest ? highest : value));
+      float floorCount = 0.1f * pwmTop;
+      float ceilingCount = 0.8f * pwmTop;
+      compare[phase] = (uint32_t)(value < floorCount ? floorCount : (value > ceilingCount ? ceilingCount : value));
     }
     TIM1->CCR1 = compare[0];
     TIM1->CCR2 = compare[1];
@@ -1123,6 +1187,43 @@ void scanCogging() {
   storeCoggingTable();
 }
 
+// ---------------------------------------------------------------- planned moves
+// Works out the fastest move from `from` to `to` within the speed,
+// acceleration and braking limits, starting and ending at rest. Call with
+// interrupts off.
+uint32_t moveStartMillis;
+float movePlannedSeconds;
+bool moveTimed;
+
+void planMove(float from, float to) {
+  float distance = fabsf(to - from);
+  move.active = false;
+  moveTimed = false;
+  if (distance < MOVE_SETTLED_DEGREES) return;  // too short to plan; the position loop closes it
+  float accel = MOVE_ACCEL_RPM_PER_SECOND * 6.0f;   // rpm/s -> deg/s^2
+  float decel = MOVE_DECEL_RPM_PER_SECOND * 6.0f;
+  // Peak speed if there were no cruise: the two ramps exactly cover the distance.
+  float peak = sqrtf(2.0f * distance * accel * decel / (accel + decel));
+  if (peak > MOVE_MAX_RPM * 6.0f) peak = MOVE_MAX_RPM * 6.0f;
+  move.start = from;
+  move.sign = to >= from ? 1.0f : -1.0f;
+  move.distance = distance;
+  move.accel = accel;
+  move.decel = decel;
+  move.peak = peak;
+  move.accelTime = peak / accel;
+  move.decelTime = peak / decel;
+  move.accelDistance = 0.5f * peak * peak / accel;
+  move.cruiseDistance = distance - move.accelDistance - 0.5f * peak * peak / decel;
+  if (move.cruiseDistance < 0) move.cruiseDistance = 0;
+  move.cruiseTime = move.cruiseDistance / peak;
+  move.time = 0;
+  move.active = true;
+  moveStartMillis = millis();
+  movePlannedSeconds = move.accelTime + move.cruiseTime + move.decelTime;
+  moveTimed = true;
+}
+
 // ---------------------------------------------------------------- commands
 // Reads one command line from the Serial Monitor without blocking.
 void handleSerial() {
@@ -1178,6 +1279,7 @@ void handleSerial() {
     }
     noInterrupts();
     if (mode != TRIPPED) {
+      if (command != 'd') move.active = false;
       if (command == 'd') {
         targetD = clampf(value, TARGET_LIMIT_AMPS);
         if (mode == IDLE) {
@@ -1199,6 +1301,7 @@ void handleSerial() {
         targetD = 0;
         targetQ = 0;
         targetDegrees = command == 'p' ? value : shaftDegrees;
+        if (command == 'p') planMove(shaftDegrees, value);
         mode = POSITION;
       }
     }
@@ -1299,6 +1402,19 @@ void loop() {
     interrupts();
   }
   if (mode == TRIPPED) shutDown();
+
+  // Report how long a planned move took to arrive and stop.
+  if (moveTimed && !move.active && mode == POSITION && fabsf(targetDegrees - shaftDegrees) < MOVE_SETTLED_DEGREES &&
+      fabsf(rpm) < 10.0f) {
+    moveTimed = false;
+    Serial.print(F("move: planned "));
+    Serial.print(movePlannedSeconds * 1000.0f, 0);
+    Serial.print(F(" ms, arrived in "));
+    Serial.print(millis() - moveStartMillis);
+    Serial.print(F(" ms, peak speed "));
+    Serial.print(move.peak / 6.0f, 0);
+    Serial.println(F(" rpm"));
+  }
 
   if (statusIntervalMillis > 0 && millis() - lastPrintMillis >= statusIntervalMillis) {
     lastPrintMillis = millis();
