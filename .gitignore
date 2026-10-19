@@ -7,3 +7,12 @@ legacy/
 node_modules/
 package.json
 package-lock.json
+# KiCad / schematic tooling
+hw/.venv/
+hw/review/*.json
+hw/review/netlist.xml
+*-backups/
+*.lck
+fp-info-cache
+.history/
+*.kicad_prl

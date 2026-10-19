@@ -44,15 +44,15 @@ flowchart LR
 - Overcurrent: shunt outputs also feed MCU comparators (COMP1/3/4, DAC thresholds) wired to TIM1 break input: hardware trip at the configured level within one PWM period (FR24). DRV8353 VDS overcurrent set to about 0.3 V, latched, as short-circuit backstop. Independent watchdog enabled by option byte.
 - Encoder: ams AS5047P-ATSM, TSSOP-14, alone on the motor-facing (bottom) side at board center. JLC C962063. 14-bit SPI, dynamic angle error compensation (built-in latency correction), designed for motor commutation, rated to 28 krpm. 3.3 V operation per datasheet (DS000324 v2-00, Power Management, Figure 10): VDD and VDD3V3 tied together to the 3.3 V rail (3.0 to 3.6 V), one 100 nF decoupling capacitor. 15 mA. SPI mode 1, up to 10 MHz, on its own SPI port (SPI3) so USB-only readout never clocks the unpowered DRV.
 - CAN: TI TCAN3413DRBR, VSON-8 3×3, 3.3 V only, CAN FD to 8 Mbps, ±58 V bus-fault rated (no extra TVS). JLC C22445415. Placed within a few mm of the CAN connectors. Termination: 120 Ω across CANH/CANL through a 1-position SMD slide DIP switch (JLC C6386918), on at the first and last board (FR38). Connector GND pin to board ground through 100 Ω so CAN GND never carries chain return current.
-- Logic power: LM5008A buck 5 V and USB VBUS 5 V, OR'd by two B5819W Schottky diodes (SOD-123, 40 V 1 A, JLC basic C8598), into AP2112K-3.3 LDO (Diodes Inc, SOT-23-5, 600 mA, 250 mV typ dropout, JLC C51118). USB-C sink only: 5.1 kΩ on CC1/CC2, no PD. USB ESD: USBLC6-2SC6 (JLC C2687116).
-- Bulk capacitance: 4 × 100 µF 63 V polymer, 10 × 10.5 mm, 3.1 A ripple, 30 mΩ (JLC C54321630) + 6 × 4.7 µF 100 V X7R 1210 at the bridge. Ripple current at 20 A RMS is about 13 A.
+- Logic power: LM5008A buck 5 V and USB VBUS 5 V, OR'd by two B5819W Schottky diodes (SOD-123, 40 V 1 A, JLC basic C8598), into AP2112K-3.3 LDO (Diodes Inc, SOT-23-5, 600 mA, 250 mV typ dropout, JLC C51118). USB-C sink only: 5.1 kΩ on CC1/CC2, no PD. USB ESD: USBLC6-2SC6 (JLC C2687116). 1 µF on USB VBUS at the connector (USB max 10 µF).
+- Bulk capacitance: 4 × 47 µF 80 V polymer, 10 × 10 mm, 2.7 A ripple, 30 mΩ (MA80V47M10X10, JLC C54321633; 80 V ≥ 1.2 × 54 V hard trip) + 6 × 4.7 µF 100 V X7R 1210 at the bridge. Ripple current at 20 A RMS is about 13 A.
 - Bus voltage: divider 100 kΩ / 5.1 kΩ (about 68 V full scale, 16.6 mV per count) + RC filter → ADC.
 - Board temperature: Murata NCP15XH103F03RC NTC (10 kΩ, B 3380 K, 0402, JLC C77131) next to the MOSFETs, with a 10 kΩ 1% resistor to 3.3 V → ADC (FR28).
 - Bus current (FR37): computed in firmware, I_bus = 1.5 × (Vd·Id + Vq·Iq) / V_bus, about ±10% (ignores switching losses). Same value drives the regen limit (FR33, negative = power returned) and lets the host check the 15 A chain budget (FR35). No sensor.
 - Connectors: power 2 × Amass XT30PW (male IN C431092, female OUT C2913282), 15 A continuous, both on the same edge; CAN 2 × JST-GH 4-pin (CANH, CANL, GND, spare); USB-C 16-pin USB 2.0 receptacle. All on board edges.
-- Debug: 5 bare pads in a 2.54 mm row (3V3, SWCLK, GND, SWDIO, NRST), wired to an ST-LINK (the Nucleo's CN4). BOOT0 pad next to a 3V3 pad, 10 kΩ pull-down on PB8-BOOT0, for ROM DFU recovery.
+- Debug: 5 bare pads in a 2.54 mm row (3V3, SWCLK, GND, SWDIO, NRST), not fitted, for an ST-LINK (the Nucleo's CN4). Debugging only; firmware loads over USB-C. Hand-solder a 1×5 header on the boards you debug. BOOT0 pad next to a 3V3 pad, 10 kΩ pull-down on PB8-BOOT0, for ROM DFU recovery.
 - Status: one bicolor LED (green OK, red fault), not on PC13 to PC15 (3 mA limit).
-- Test pads: SOA/SOB/SOC, VBUS, 5 V, 3V3, nFAULT. Unpopulated RC snubber pads on each phase node.
+- Test pads: SOA/SOB/SOC, VBUS, 5 V, 3V3, nFAULT. No snubber pads: phase-node ringing is controlled by a tight hot loop (layout) and DRV8353S IDRIVE (SPI). A bad ring on the first board means a layout respin.
 - PCB: 4 layers, 2 oz outer copper, 1.6 mm. All parts on top except the encoder; bottom flat for a thermal pad (FR4). M3 holes on 25 mm and 30 mm circles (NFR2).
 
 ## Supporting components (per each chip's datasheet)
@@ -104,7 +104,10 @@ flowchart LR
 | USB | PA11 / PA12 |
 | SWD / BOOT0 | PA13 / PA14, NRST / PB8 |
 | HSE crystal | PF0 / PF1 |
-| Free GPIO for DRV nSCS (FT pin), ENABLE, nFAULT; encoder CSn; TCAN3413 STB; LED × 2 | from PB1, PB2, PB4, PB6, PB7, PB9, PB10, PB11, PB12, PC4, PC6 (not PC13 to PC15) |
+| DRV nSCS (needs 5 V-tolerant: internal pull-up to DVDD) / ENABLE / nFAULT | PB7 (FT_f) / PB11 / PB10 |
+| Encoder CSn / TCAN3413 STB | PB12 (TT_a, 3.3 V only) / PB9 |
+| LED green / red | PB1 / PB2 |
+| Unused (no-connect) | PA4, PB4, PB6, PC4, PC6, PC13, PC14, PC15 |
 
 TIM1 CH2/CH3 sit on PA9/PA10, which also switch the USB-C dead-battery pull-downs on PB4/PB6: firmware disables them (PWR_CR3 UCPD_DBDIS) first thing at boot.
 
@@ -140,9 +143,9 @@ USB only: logic runs, DRV8353 unpowered, motion refused (FR48). DRV SPI and cont
 - D11. Power connector: XT30PW. Alternative: XT60PW (30 A). Why: smaller; 15 A / 720 W chain budget is enough for a hobby arm (FR35).
 - D12. Termination: slide DIP switch. Alternatives: solder jumper, firmware-controlled analog switch. Why: one $0.49 part, no soldering, no firmware.
 - D13. 16 MHz crystal, FDCAN clocked from PLLQ at 85 MHz. Alternatives: 40 MHz crystal (FDCAN straight from HSE), internal HSI. Why: HSI is ±1%, too loose for CAN FD; 40 MHz crystals need CL ≤ 8 pF and ESR ≤ 40 Ω to meet the 1.5 mA/V gm limit, while the 16 MHz basic part has 5× margin; 85 MHz gives whole time quanta at both bit rates.
-- D14. SWD as bare pads. Alternative: Tag-Connect TC2030. Why: no purchase, works with the Nucleo's ST-LINK.
+- D14. SWD as unfitted 2.54 mm pads. Alternatives: JLC-fitted header (a part on every board for a debug-only port), Tag-Connect TC2030 (cable to buy). Why: SWD is debug only, since firmware loads over USB-C DFU; works with the Nucleo's ST-LINK.
 - D15. Regen: firmware limit (FR33) + flux braking above the OV setting (FR26) + one external regen clamp for power-supply users. Alternative: on-board brake resistor. Why: matches moteus (firmware limits) and ODrive (external Regen Clamp); each board alone absorbs only about 22 mJ between 48 and 52 V.
-- D16. Bulk caps: 4 × 100 µF polymer + 6 × 4.7 µF ceramic. Alternative: 1 polymer + 4 ceramics. Why: about 13 A ripple at 20 A RMS; each polymer is rated 3.1 A.
+- D16. Bulk caps: 4 × 47 µF 80 V polymer + 6 × 4.7 µF 100 V ceramic. 63 V parts fail the 1.2 × 54 V derating. Alternative: 1 polymer + 4 ceramics. Why: about 13 A ripple at 20 A RMS; each polymer is rated 2.7 A (10.8 A total), ceramics carry the high-frequency share.
 - D17. No per-board fuse. Why: user choice; a shorted board can take down the chain.
 
 ## Parts to buy (off-board)
@@ -251,7 +254,7 @@ Topology and parts per DRV8353 datasheet (SLVSDY6A) Table 22 (the same LM5008A, 
 
 | Part | TI example (10 V out) | Ours (5 V out) | Basis |
 |---|---|---|---|
-| RFB2 (FB to GND) / RFB1 (OUT to FB) per LM5008A labels | 3.01 k / 1.0 k | 1.0 k / 1.0 k | VOUT = 2.5 × (RFB1 + RFB2) / RFB1 (equal values, so labels do not matter) |
+| RFB2 (VOUT to FB) / RFB1 (FB to GND), per TI Fig. 10 | 3.01 k / 1.0 k | 1.0 k / 1.0 k | VOUT = 2.5 × (RFB1 + RFB2) / RFB1 |
 | RT | 324 k | 180 k (Fs ≈ 200 kHz, min on-time 479 ns > 400 ns) | Eq. 4, Fs = VOUT / (1.385e-10 × RT) |
 | L1 | 220 µH | 120 µH, Isat ≥ 610 mA: SWPA6045S121MT (C96952, 850 mA) | Eq. 8, ripple < 200 mA p-p at 52 V |
 | RCL | 332 k | 383 k (7.5 µs) | Eq. 5, same tolerance steps as TI |

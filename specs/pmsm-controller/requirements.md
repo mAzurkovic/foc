@@ -47,7 +47,7 @@ Custom FOC controller board plus firmware for generic hobby PMSMs. Target use: d
 Every fault below disables outputs (motor coasts), latches, and blocks motion commands until the host clears it, unless stated otherwise.
 - FR24. Phase overcurrent: trip level configurable ≤ 45 A. Response within 1 PWM period.
 - FR25. Encoder fault: invalid readings for > 1 ms.
-- FR26. Bus overvoltage: above configured max (setting ≤ 52 V) the controller stops returning power and burns braking energy in the motor windings, outputs stay on, no fault. Above configured max + 4 V (≤ 56 V): outputs disabled, fault latched.
+- FR26. Bus overvoltage: above configured max (setting ≤ 52 V) the controller stops returning power and burns braking energy in the motor windings, outputs stay on, no fault. Above configured max + 2 V (≤ 54 V): outputs disabled, fault latched.
 - FR27. Bus undervoltage: below configured min, min setting ≥ 10 V.
 - FR28. Board overtemperature: current derated linearly from 90 °C, trip at 110 °C, measured at the power stage.
 - FR29. Gate driver fault reported by the driver.
