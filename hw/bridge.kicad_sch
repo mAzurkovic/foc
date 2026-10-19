@@ -3674,7 +3674,7 @@
 		)
 		(uuid "894a0de0-89fb-444c-9ca0-8287abce8b16")
 	)
-	(text "Shunts R8-R10, 1 mOhm 2512: NT1-NT6 net ties make the Kelvin taps; route x_SENSE_P/N\nas a pair from the shunt pads straight to DRV8353S SPx/SNx. 1 mOhm x gain 20 = 20 mV/A.\nMOSFETs: 80 V >= 1.5 x 54 V hard trip. Qg 74 nC: 3 x Qg x 20 kHz = 4.4 mA < 15 mA VCP budget.\nTH1 against the MOSFETs (FR28). J3-J5: 2.0 mm plated holes for the motor wires."
+	(text "Shunts R8-R10, 1 mOhm 2512: NT1-NT6 net ties make the Kelvin taps; route x_SENSE_P/N\nas a pair from the shunt pads straight to DRV8353S SPx/SNx. 1 mOhm x gain 20 = 20 mV/A.\nMOSFETs: 80 V >= 1.5 x 54 V hard trip. Qg 74 nC: 3 x Qg x 20 kHz = 4.4 mA < 15 mA VCP budget.\nTH1 against the MOSFETs: power-stage temperature for current derating and trip. J3-J5: 2.0 mm plated holes for the motor wires."
 		(exclude_from_sim no)
 		(at 101.6 210.82 0.0000)
 		(effects

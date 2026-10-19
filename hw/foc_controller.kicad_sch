@@ -2121,7 +2121,7 @@
 		)
 		(uuid "319c91ad-3007-4fc5-8e95-80ed767bd517")
 	)
-	(text "8 x M3: 4 on a 25 mm circle, 4 on a 30 mm circle (NFR2). Encoder at board center, motor side."
+	(text "8 x M3: 4 on a 25 mm circle, 4 on a 30 mm circle. Encoder at board center, motor side."
 		(exclude_from_sim no)
 		(at 50.8 264.16 0.0000)
 		(effects

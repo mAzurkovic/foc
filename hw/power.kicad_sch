@@ -7479,7 +7479,7 @@
 		(at 147.32 213.36)
 		(uuid "e742b44d-a8c8-458f-b900-94a2e2dac11b")
 	)
-	(text "Bus IN/OUT: J1 and J2 pins joined by wide planes, 15 A pass-through (FR35).\nNo on-board inrush limiting: external XT90-S anti-spark at the supply (FR40).\nXT30 + / - per LCSC footprint: confirm on a real part before layout."
+	(text "Bus IN/OUT: J1 and J2 pins joined by wide planes, 15 A pass-through.\nNo on-board inrush limiting: external XT90-S anti-spark at the supply.\nXT30 + / - per LCSC footprint: confirm on a real part before layout."
 		(exclude_from_sim no)
 		(at 22.86 152.4 0.0000)
 		(effects
@@ -7490,7 +7490,7 @@
 		)
 		(uuid "73719ea0-790f-4f03-81bd-214b29cbbef1")
 	)
-	(text "Bulk: 4 x 47 uF 80 V polymer (2.7 A ripple, 30 mOhm) + 6 x 4.7 uF 100 V X7R 1210.\nCap ripple about 13 A RMS at 20 A RMS phase; 80 V >= 1.2 x 54 V hard trip (FR26).\nPlace the 4.7 uF parts at the bridge high-side drains."
+	(text "Bulk: 4 x 47 uF 80 V polymer (2.7 A ripple, 30 mOhm) + 6 x 4.7 uF 100 V X7R 1210.\nCap ripple about 13 A RMS at 20 A RMS phase; 80 V >= 1.2 x 54 V hard trip.\nPlace the 4.7 uF parts at the bridge high-side drains."
 		(exclude_from_sim no)
 		(at 76.2 165.1 0.0000)
 		(effects
@@ -7512,7 +7512,7 @@
 		)
 		(uuid "8b903642-657f-4025-ad64-7ef5cf6e7de0")
 	)
-	(text "Diode-OR: buck 5 V or USB 5 V; neither back-feeds the other (FR48, FR49).\nAP2112K: 1 uF X7R on VIN and VOUT, EN tied to VIN (Diodes datasheet, Note 4)."
+	(text "Diode-OR: buck 5 V or USB 5 V; neither back-feeds the other.\nAP2112K: 1 uF X7R on VIN and VOUT, EN tied to VIN (Diodes datasheet, Note 4)."
 		(exclude_from_sim no)
 		(at 22.86 241.3 0.0000)
 		(effects

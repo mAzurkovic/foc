@@ -9797,7 +9797,7 @@
 		)
 		(uuid "4d58a9e4-b4de-4e14-aaf6-bbe0ae2addd1")
 	)
-	(text "NRST: 100 nF (Fig. 27), internal 40k pull-up.\nBOOT0 (PB8): 10k pull-down; bridge JP1 at power-up for ROM DFU over USB (FR51)."
+	(text "NRST: 100 nF (Fig. 27), internal 40k pull-up.\nBOOT0 (PB8): 10k pull-down; bridge JP1 at power-up for ROM DFU over USB."
 		(exclude_from_sim no)
 		(at 25.4 172.72 0.0000)
 		(effects
