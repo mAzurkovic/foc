@@ -49,7 +49,7 @@ flowchart LR
 - Bus voltage: divider 100 kΩ / 5.1 kΩ (about 68 V full scale, 16.6 mV per count) + RC filter → ADC.
 - Board temperature: Murata NCP15XH103F03RC NTC (10 kΩ, B 3380 K, 0402, JLC C77131) next to the MOSFETs, with a 10 kΩ 1% resistor to 3.3 V → ADC (FR28).
 - Bus current (FR37): computed in firmware, I_bus = 1.5 × (Vd·Id + Vq·Iq) / V_bus, about ±10% (ignores switching losses). Same value drives the regen limit (FR33, negative = power returned) and lets the host check the 15 A chain budget (FR35). No sensor.
-- Connectors: power 2 × Amass XT30PW (male IN C431092, female OUT C2913282), 15 A continuous, both on the same edge; CAN 2 × JST-GH 4-pin (CANH, CANL, GND, spare); USB-C 16-pin USB 2.0 receptacle. All on board edges.
+- Connectors: power 2 × Amass XT30PW-F female (IN and OUT, JLC C2913282), 15 A continuous, both on the same edge. Female on the board so the live side of every link is shrouded; chain leads are male-to-male. Pad 2 = + (flat end of the housing), pad 1 = − (rounded end), checked on a physical XT30PW-F; CAN 2 × JST-GH 3-pin SM03B-GHS-TB (JLC C514175: CANH, CANL, GND; GND is the reference for the isolated PC adapter); USB-C 16-pin USB 2.0 receptacle. All on board edges.
 - Debug: 5 bare pads in a 2.54 mm row (3V3, SWCLK, GND, SWDIO, NRST), not fitted, for an ST-LINK (the Nucleo's CN4). Debugging only; firmware loads over USB-C. Hand-solder a 1×5 header on the boards you debug. BOOT0 pad next to a 3V3 pad, 10 kΩ pull-down on PB8-BOOT0, for ROM DFU recovery.
 - Status: one bicolor LED (green OK, red fault), not on PC13 to PC15 (3 mA limit).
 - Test pads: SOA/SOB/SOC, VBUS, 5 V, 3V3, nFAULT. No snubber pads: phase-node ringing is controlled by a tight hot loop (layout) and DRV8353S IDRIVE (SPI). A bad ring on the first board means a layout respin.
@@ -79,6 +79,7 @@ flowchart LR
 | DRV8353S | ENABLE, INHx, INLx, SCLK, SDI | internal 100 kΩ pull-downs, no external parts | §7.5 RPD |
 | LM5008A | all | per Appendix D | SNVS583H §8.2 |
 | AS5047P | VDD + VDD3V3 tied | 100 nF | DS000324 Figure 10 |
+| AS5047P | CSn | 10 k pull-up to 3.3 V, so CSn never floats while the MCU is in reset or ROM DFU | DS000324 pin table, note 1 (floating inputs not allowed) |
 | TCAN3413 | VCC, VIO (both 3.3 V) | 100 nF each | SLLSFS8A §8.4 |
 | TCAN3413 | STB | integrated pull-up (defaults to standby): MCU drives low to operate | pin table |
 | TCAN3413 | TXD | integrated pull-up, no external parts | pin table |
@@ -91,6 +92,7 @@ flowchart LR
 - Pass-through: 15 A as planes on several layers (IPC-2221: about 6.3 mm of 2 oz outer copper for 10 K rise).
 - MCU and JST-GH (both 85 °C parts) on the cool side, away from the MOSFETs.
 - TCAN3413 within a few mm of the CAN connector pair (short stubs at 5 Mbps).
+- Kelvin taps: each shunt's net tie sits on that shunt's own pad: NT1/NT3/NT5 on the top pad of R8/R9/R10 (low-side source side), NT2/NT4/NT6 on the bottom pad (GND side). Never tap the GND plane or a trace carrying phase current. The SPx/SNx pair leaves from the inner edge of the pads and runs side by side to the DRV8353S, away from the power path. DRC cannot check this (the net tie joins the nets anywhere on them), so it is a manual review item on every layout render.
 
 ## Interfaces (MCU pins, UFQFPN-48)
 | Function | Pins |
@@ -151,12 +153,12 @@ USB only: logic runs, DRV8353 unpowered, motion refused (FR48). DRV SPI and cont
 ## Parts to buy (off-board)
 | # | Item | Qty | Requirement |
 |---|---|---|---|
-| B1 | Amass XT90-S anti-spark pair + XT90-to-XT30 adapter lead | 1 per chain | FR40 |
+| B1 | Amass XT90-S anti-spark pair + XT90-to-XT30 male adapter lead | 1 per chain | FR40 |
 | B2 | ADuM3160 USB isolator module (12 Mbps full speed, 2.5 kV) | 1 | FR49 |
 | B3 | PEAK PCAN-USB FD (500 V isolated); macOS via MacCAN PCBUSB library | 1 | FR49, FR55 |
 | B4 | Diametric magnet 6 × 2.5 mm N35 (Radial Magnets 9042, DigiKey; not sold by JLC) | 1 per motor | Encoder |
 | B5 | 40 × 40 × 30 mm finned heatsink + thermal pad (20 A rating only) | 1 per board, optional | FR4 |
-| B6 | XT30 power jumpers, JST-GH 4-pin CAN jumpers | per chain link | FR34 |
+| B6 | XT30 male-to-male power jumpers, JST-GH 3-pin CAN jumpers (pin 1 to pin 1) | per chain link | FR34 |
 | B7 | Regen clamp / brake-resistor module, ≥ 56 V rated, for power-supply use | 1 per chain | FR33 |
 
 ## Open Questions
@@ -255,8 +257,8 @@ Topology and parts per DRV8353 datasheet (SLVSDY6A) Table 22 (the same LM5008A, 
 | Part | TI example (10 V out) | Ours (5 V out) | Basis |
 |---|---|---|---|
 | RFB2 (VOUT to FB) / RFB1 (FB to GND), per TI Fig. 10 | 3.01 k / 1.0 k | 1.0 k / 1.0 k | VOUT = 2.5 × (RFB1 + RFB2) / RFB1 |
-| RT | 324 k | 180 k (Fs ≈ 200 kHz, min on-time 479 ns > 400 ns) | Eq. 4, Fs = VOUT / (1.385e-10 × RT) |
-| L1 | 220 µH | 120 µH, Isat ≥ 610 mA: SWPA6045S121MT (C96952, 850 mA) | Eq. 8, ripple < 200 mA p-p at 52 V |
+| RT | 324 k | 240 k, YAGEO RC0603FR-07240KL (JLC C137765): Fs ≈ 150 kHz, on-time 616 ns at 54 V, 410 ns at the worst-case −33% spread (TON-2: 200 / 300 / 420 ns), so ≥ 400 ns across the whole input range | Eq. 4, Fs = VOUT / (1.385e-10 × RT) |
+| L1 | 220 µH | 120 µH, Isat ≥ 610 mA: SWPA6045S121MT (C96952, 850 mA) | Eq. 8, ripple 250 mA p-p at 54 V (314 mA with L at −20%); peak 0.31 A at 150 mA load < 0.41 A min current limit |
 | RCL | 332 k | 383 k (7.5 µs) | Eq. 5, same tolerance steps as TI |
 | R3 | 3.0 Ω | 1.0 Ω | ≥ 25 mV p-p at FB; TI range 0.5 to 3 Ω |
 | D1 | DFLS1100 | DFLS1100-7 (C107674) | ≥ VIN max, ≥ 610 mA |
