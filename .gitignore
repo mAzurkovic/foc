@@ -3,4 +3,3 @@ logs/
 build/
 legacy/
 .kiri/
-node_modules/
