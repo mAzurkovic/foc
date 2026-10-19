@@ -3,3 +3,7 @@ logs/
 build/
 legacy/
 .kiri/
+# No Node.js in this project
+node_modules/
+package.json
+package-lock.json
