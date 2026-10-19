@@ -1,3 +1,6 @@
 .DS_Store
 logs/
 build/
+legacy/
+.kiri/
+node_modules/
