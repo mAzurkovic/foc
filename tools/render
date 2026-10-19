@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Render a KiCad project into images and reports that both people and agents can review.
+#
+# Usage: tools/render <project.kicad_pro> [out_dir]
+#
+# Writes to out_dir (default: build/render/<project>/):
+#   schematic.pdf            all sheets
+#   sch/*.svg|png            one image per sheet
+#   pcb/<layer>.svg|png      each copper layer with the board outline
+#   pcb/place-top|bottom.png fab outlines, courtyards, silkscreen: for placement review
+#   pcb/3d-top|bottom.png    3D renders
+#   erc.json, drc.json       rule-check reports
+#
+# Exits 1 if ERC or DRC reports any error- or warning-level violation, so it can
+# gate a loop. Images are still written when it fails.
+set -euo pipefail
+
+KICAD_CLI="${KICAD_CLI:-$(command -v kicad-cli || echo /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli)}"
+PNG_WIDTH=2400
+
+# kicad-cli picks up Homebrew's fontconfig and warns about its config on every call.
+exec 2> >(grep --line-buffered -v '^Fontconfig' >&2)
+
+pro="${1:?usage: tools/render <project.kicad_pro> [out_dir]}"
+dir="$(cd "$(dirname "$pro")" && pwd)"
+name="$(basename "$pro" .kicad_pro)"
+sch="$dir/$name.kicad_sch"
+pcb="$dir/$name.kicad_pcb"
+out="${2:-build/render/$name}"
+
+rm -rf "$out"
+mkdir -p "$out"
+
+to_png() { rsvg-convert --background-color=white -w "$PNG_WIDTH" "$1" -o "${1%.svg}.png"; }
+
+violations() { python3 -c '
+import json, sys
+r = json.load(open(sys.argv[1]))
+items = r.get("violations", []) + [v for s in r.get("sheets", []) for v in s.get("violations", [])]
+items += r.get("unconnected_items", []) + r.get("schematic_parity", [])
+print(sum(v.get("severity") in ("error", "warning") for v in items))' "$1"; }
+
+failed=0
+
+if [[ -f "$sch" ]]; then
+  "$KICAD_CLI" sch export pdf -o "$out/schematic.pdf" "$sch" >/dev/null
+  mkdir -p "$out/sch"
+  "$KICAD_CLI" sch export svg -o "$out/sch" "$sch" >/dev/null
+  for f in "$out"/sch/*.svg; do to_png "$f"; done
+
+  "$KICAD_CLI" sch erc --format json --severity-error --severity-warning -o "$out/erc.json" "$sch" >/dev/null
+  n="$(violations "$out/erc.json")"
+  echo "ERC: $n violations"
+  (( n == 0 )) || failed=1
+fi
+
+if [[ -f "$pcb" ]]; then
+  mkdir -p "$out/pcb"
+  plot() { # plot <name> <layers> [extra kicad-cli args...]
+    local file="$out/pcb/$1.svg" layers="$2"; shift 2
+    "$KICAD_CLI" pcb export svg --mode-single --page-size-mode 2 --exclude-drawing-sheet \
+      --layers "$layers" -o "$file" "$@" "$pcb" >/dev/null
+    to_png "$file"
+  }
+
+  # Copper layers are listed as (<id> "<name>.Cu" <type>) in the board's layer table.
+  for layer in $(grep -oE '^\s*\([0-9]+ "[^"]+\.Cu"' "$pcb" | grep -oE '"[^"]+"' | tr -d '"'); do
+    plot "$layer" "$layer,Edge.Cuts"
+  done
+  plot place-top "F.Fab,F.Courtyard,F.Silkscreen,Edge.Cuts" --sketch-pads-on-fab-layers
+  plot place-bottom "B.Fab,B.Courtyard,B.Silkscreen,Edge.Cuts" --sketch-pads-on-fab-layers --mirror
+
+  for side in top bottom; do
+    "$KICAD_CLI" pcb render --side "$side" --background opaque -w 1600 -h 1200 \
+      -o "$out/pcb/3d-$side.png" "$pcb" >/dev/null
+  done
+
+  parity=()
+  [[ -f "$sch" ]] && parity=(--schematic-parity)
+  "$KICAD_CLI" pcb drc --format json --severity-error --severity-warning "${parity[@]}" \
+    -o "$out/drc.json" "$pcb" >/dev/null
+  n="$(violations "$out/drc.json")"
+  echo "DRC: $n violations"
+  (( n == 0 )) || failed=1
+fi
+
+echo "Rendered to $out"
+exit "$failed"

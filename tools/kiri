@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Visual diff of a KiCad project's schematic and layout across git commits, using KiRI.
+#
+# Usage: tools/kiri <project.kicad_pro> [kiri options]
+#   tools/kiri hw/board.kicad_pro                  browse every commit that changed the board
+#   tools/kiri hw/board.kicad_pro -g HEAD..LOCAL   uncommitted changes vs. last commit
+#   tools/kiri hw/board.kicad_pro -g HEAD~1..HEAD  what the last commit changed
+#
+# Opens a local web page. Install KiRI once with: tools/kiri --install
+set -euo pipefail
+
+KIRI_HOME="${KIRI_HOME:-$HOME/.local/share/kiri}"
+
+if [[ "${1:-}" == "--install" ]]; then
+  # KiRI's own macOS installer disables Gatekeeper and builds OCaml tools that only
+  # KiCad 5 needs. With KiCad 7+ it plots through kicad-cli and needs only these.
+  brew install gnu-sed findutils coreutils rename grep
+  [[ -d "$KIRI_HOME" ]] || git clone --recurse-submodules https://github.com/leoheck/kiri.git "$KIRI_HOME"
+  exit
+fi
+
+# KiRI calls `grep -P`, which only GNU grep has.
+export PATH="$KIRI_HOME/bin:/opt/homebrew/opt/grep/libexec/gnubin:/Applications/KiCad/KiCad.app/Contents/MacOS:$PATH"
+
+pro="${1:?usage: tools/kiri <project.kicad_pro> [kiri options]}"
+shift
+cd "$(dirname "$pro")"
+exec kiri --kicad-cli "$@" "$(basename "$pro")"
