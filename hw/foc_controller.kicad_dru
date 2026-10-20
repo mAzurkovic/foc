@@ -1,0 +1,76 @@
+(version 1)
+# Custom DRC rules for a 4-layer motor controller, JLCPCB, 2 oz outer copper.
+# FOC controller (hw/foc_controller.kicad_pcb). HC = high current, low voltage (shunt top).
+# (net_settings.netclass_patterns). tools/render fails if this file does not load:
+# KiCad silently ignores the whole file when any rule is invalid.
+
+# ---- Voltage clearance (IPC-2221B Table 6-1, 31 to 100 V) -----------------------
+# B2 external uncoated: 0.6 mm. B1 internal: 0.1 mm, held at 0.2 mm for fab margin.
+# A package's own pins are exempt: the part maker sets their pitch.
+(rule "HV clearance, outer"
+  (layer outer)
+  (condition "(A.hasNetclass('HV') || A.hasNetclass('HV_SIG') || A.hasNetclass('GATE_HS')) && !B.hasNetclass('HV') && !B.hasNetclass('HV_SIG') && !B.hasNetclass('GATE_HS') && !A.intersectsCourtyard('Q*') && !A.intersectsCourtyard('U*') && !B.intersectsCourtyard('Q*') && !B.intersectsCourtyard('U*')")
+  (constraint clearance (min 0.6mm)))
+
+(rule "HV clearance, inner"
+  (layer inner)
+  (condition "(A.hasNetclass('HV') || A.hasNetclass('HV_SIG') || A.hasNetclass('GATE_HS')) && !B.hasNetclass('HV') && !B.hasNetclass('HV_SIG') && !B.hasNetclass('GATE_HS')")
+  (constraint clearance (min 0.2mm)))
+
+# ---- Widths --------------------------------------------------------------------
+# High-current paths are zones, not tracks. A track on these nets is a stub or a
+# fanout and still needs real width.
+(rule "HV track width"
+  (condition "A.Type == 'Track' && (A.hasNetclass('HV') || A.hasNetclass('HC')) && !A.intersectsCourtyard('U*')")
+  (constraint track_width (min 1.0mm)))
+
+(rule "gate drive width"
+  (condition "A.Type == 'Track' && (A.hasNetclass('GATE_HS') || A.hasNetclass('GATE_LS'))")
+  (constraint track_width (min 0.4mm)))
+
+(rule "logic power width"
+  (condition "A.Type == 'Track' && A.hasNetclass('PWR')")
+  (constraint track_width (min 0.4mm)))
+
+# ---- Vias ----------------------------------------------------------------------
+(rule "via size"
+  (condition "A.Type == 'Via'")
+  (constraint hole_size (min 0.3mm))
+  (constraint annular_width (min 0.15mm)))
+
+(rule "hole to hole"
+  (constraint hole_to_hole (min 0.5mm)))
+
+# ---- High-current pads connect solid to zones -----------------------------------
+(rule "solid zone connection on power"
+  (condition "A.hasNetclass('HV') || A.hasNetclass('HC')")
+  (constraint zone_connection solid))
+
+(rule "thermal spokes elsewhere"
+  (constraint thermal_spoke_width (min 0.3mm)))
+
+# ---- Diff pairs ----------------------------------------------------------------
+(rule "USB pair"
+  (condition "A.hasNetclass('USB')")
+  (constraint diff_pair_uncoupled (max 3mm))
+  (constraint skew (max 0.5mm)))
+
+(rule "CAN pair"
+  (condition "A.hasNetclass('CAN')")
+  (constraint diff_pair_uncoupled (max 5mm)))
+
+# ---- Shunt Kelvin sense: keep away from switching nodes -------------------------
+(rule "sense away from phase"
+  (condition "A.hasNetclass('SENSE') && (B.hasNetclass('HV') || B.hasNetclass('HV_SIG')) && !A.intersectsCourtyard('U*') && !A.intersectsCourtyard('R*')")
+  (constraint clearance (min 1.0mm)))
+
+# ---- Manufacturing and assembly -------------------------------------------------
+(rule "copper to edge"
+  (constraint edge_clearance (min 0.5mm)))
+
+(rule "courtyards"
+  (constraint courtyard_clearance (min 0.2mm)))
+
+(rule "silk off pads"
+  (layer "F.SilkS")
+  (constraint silk_clearance (min 0.15mm)))

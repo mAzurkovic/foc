@@ -55,7 +55,7 @@
 	(fp_line (start 6.75 3.60) (end 6.75 1.60) (layer F.CrtYd) (width 0.05))
 	(fp_line (start 6.75 1.60) (end -6.75 1.60) (layer F.CrtYd) (width 0.05))
 	(model "${KIPRJMOD}/hw/lib/foc_controller.3dshapes/CONN-TH_XT30PW-F-1.wrl"
-		(offset (xyz 0.000 0.000 0.000))
+		(offset (xyz 0 -6.4 0))
 		(scale (xyz 1 1 1))
 		(rotate (xyz 0 0 0))
 	)

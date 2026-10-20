@@ -16,7 +16,7 @@ Custom FOC controller board plus firmware for generic hobby PMSMs. Target use: d
 
 ### Power stage
 - FR3. Bus input 12 to 48 V DC nominal (fixed supply, or battery up to 12S, 50.4 V full).
-- FR4. Phase current at 25 °C ambient, 48 V bus, board ≤ 90 °C: 10 A RMS continuous with no heatsink in still air; 20 A RMS continuous with a heatsink (≥ 40 × 40 × 30 mm finned, or board bolted to an aluminum actuator housing through a thermal pad). 40 A peak for 2 s in both cases. Component side faces away from the motor; the motor-facing side carries only the encoder IC and is otherwise flat for the thermal pad.
+- FR4. Phase current at 25 °C ambient, 48 V bus, board ≤ 90 °C: 10 A RMS continuous with no heatsink in still air, 40 A peak for 2 s. No heatsink or thermal pad option. Parts on both sides: the motor-facing side carries the encoder IC at the center (with a part-free area around it for the magnet), the USB-C and the two CAN connectors along the connector edge, the shunts and capacitors under the power stage, and small logic parts. The actuator leaves ≥ 3 mm of clearance under the motor-facing side and ≥ 5 mm under the connector-edge strip.
 - FR5. Above 25 °C ambient, continuous rating set by board overtemperature derating (FR28).
 - FR6. Power stage disabled whenever bus voltage is below the configured min (FR27). Overvoltage handled per FR26.
 
@@ -94,9 +94,9 @@ Every fault below disables outputs (motor coasts), latches, and blocks motion co
 - FR56. Firmware behavior matches the spec. Any firmware change to a command updates the spec in the same release.
 
 ## Non-Functional Requirements
-- NFR1. Size: board within 50 × 50 mm, height ≤ 15 mm including connectors. Does not overhang a 5010-class motor (about 58 mm OD).
-- NFR2. Mounting: encoder IC at board center on the motor-facing side, magnet-to-IC gap per IC spec (about 1 to 2 mm). 4 × M3 holes on a 25 mm circle and 4 × M3 holes on a 30 mm circle.
-- NFR3. Connectors: power, bus, USB-C all on board edges.
+- NFR1. Size: board 45 × 45 mm, height ≤ 15 mm including connectors. Does not overhang a 5010-class motor (about 58 mm OD).
+- NFR2. Mounting: encoder IC at board center on the motor-facing side, magnet-to-IC gap per IC spec (about 1 to 2 mm). 4 × M3 holes in the board corners, independent of the motor's hole pattern; the actuator's standoffs set the board-to-motor spacing (magnet gap and the clearance under the connector edge).
+- NFR3. Connectors: all on one board edge, opposite the motor phase terminals and power stage, so every cable leaves the controller from one end. Side facing away from the motor: power IN, power OUT. Motor-facing side: CAN IN under power IN, USB-C, CAN OUT under power OUT, in that order. Motor phase pads side by side on the opposite edge, between the two corner holes.
 - NFR4. Cost: ≤ US$80 per board including parts and fab assembly at qty 10, excluding motor and magnet.
 - NFR5. Build: first run 10 boards, assembled by a PCB fab service.
 

@@ -4,9 +4,9 @@ Generated from KiCad's own netlist export (`kicad-cli sch export netlist`), not 
 
 ## Status
 - ERC: 0 violations (`tools/render hw/foc_controller.kicad_pro`), no exclusions.
-- 120 components, 104 nets. One DNP: J6 SWD pads (debug only, not fitted). The RC snubber pads were removed on 2026-10-19 (ringing handled by a tight hot loop in layout and DRV8353S IDRIVE) and R/C references renumbered to close the gap.
-- Every BOM part has an LCSC number, and every one is in stock in JLCPCB's assembly library (checked 2026-10-19 against JLC's own stock, not LCSC's). Mechanical items carry none and are excluded from the BOM: H1-H8 mounting holes, TP1-TP8, J3-J5 motor holes, J6, JP1, NT1-NT6.
-- Polarized parts verified from the netlist: D1 K = BUCK_SW, A = GND; D2/D3 A = +5V_BUCK / +5V_USB, K = +5V; C1-C4 + = VBUS; D4 anodes from R12/R13; Q1/Q3/Q5 D = VBUS, Q2/Q4/Q6 S = shunt.
+- 118 components. Test points cut to TP4 (GND) only; the other rails and signals are probed at component pads. One DNP: J6 SWD pads (debug only, not fitted). The RC snubber pads were removed on 2026-10-19 (ringing handled by a tight hot loop in layout and DRV8353S IDRIVE) and R/C references renumbered to close the gap.
+- Every BOM part has an LCSC number, and every one is in stock in JLCPCB's assembly library (checked 2026-10-19 against JLC's own stock, not LCSC's). Mechanical items carry none and are excluded from the BOM: H1-H4 mounting holes, TP4, J3-J5 motor holes, J6, JP1, NT1-NT6.
+- Polarized parts verified from the netlist: D1 K = BUCK_SW, A = GND; D2/D3 A = +5V_BUCK / +5V_USB, K = +5V; D4 anodes from R12/R13; Q1/Q3/Q5 D = VBUS, Q2/Q4/Q6 S = shunt.
 
 ## Pin cross-check (datasheet function, net, required parts)
 | Ref | Pin | Function | Net | Required | Present | Source |
@@ -133,7 +133,8 @@ Generated from KiCad's own netlist export (`kicad-cli sch export netlist`), not 
 | Q1-Q6 BSC026N08NS5 | 80 V | 54 V hard trip | 1.48x (rule 1.5x: 81 V at 54 V, accepted) | BSC026 datasheet |
 | U3 DRV8353S VM | 80 V abs max, 75 V rec | 54 V | 21 V | SLVSDY6A 7.1/7.3 |
 | U1 LM5008A VIN | 95 V | 54 V | 41 V | SNVS583H |
-| C1-C4 polymer | 80 V, 2.7 A each | 54 V; ~13 A total at 20 A RMS with ceramics | 1.48x | JLC listing (no datasheet on LCSC) |
+| C1-C10, C44-C49 4.7 uF 1210 X7R | 100 V | 54 V; ~0.8 A ripple each (13 A over 16) | 1.85x | FS32X475K101EGG datasheet |
+| C50-C52 100 nF 0603 X7R (half-bridge HF caps) | 100 V | 54 V | 1.85x | CC0603KRX7R0BB104 (same part as C12, C18) |
 | C5-C10, C11, C12, C18, C20 | 100 V X7R | 54 V | 1.85x | rule: 100 V on 48 V bus |
 | R1 (RT) / R17 (VBUS top) 0603 | 75 V | ~50 V across | ok | rule: 0603 on 52 V |
 | D1 DFLS1100-7 | 100 V / 1 A | 54 V, 610 mA ILIM | ok | SNVS583H 8.2.2.2 |
@@ -145,7 +146,7 @@ Generated from KiCad's own netlist export (`kicad-cli sch export netlist`), not 
 Estimates from typical X7R/X5R curves for the package and voltage; manufacturer curves were not available for the JLC parts. Verify on the first board where noted.
 - C19/C21 1 uF 50 V 0805 X7R at ~11 V: about 0.8 uF effective; datasheet asks for 1 uF nominal. OK.
 - C15 22 uF 25 V 1206 X5R at 5 V: about 11 uF effective. Sets output ripple with R5 (TI used 22 uF at 10 V, a similar effective value).
-- C5-C10 4.7 uF 100 V 1210 X7R at 48 V: about 2 uF each, 12 uF total; the polymers carry the bulk.
+- C1-C10, C44-C49 4.7 uF 100 V 1210 X7R at 48 V: about 2 uF each, 32 uF total. This is the whole bulk capacitance (no polymer); bus ripple ~5.5 V p-p at 20 A RMS, 20 kHz.
 - C16/C17 1 uF 50 V 0805 X7R at 5 V / 3.3 V: about 0.9 uF. AP2112 needs 1 uF nominal. OK.
 
 ## Analyzer (kicad-happy analyze_schematic.py) triage
@@ -185,5 +186,6 @@ A second-pass senior review found no wrong connections. Fixed from it:
 - XT30: both J1 and J2 are now XT30PW-F (female, shrouded live side). Polarity checked by the owner on a physical XT30PW-F: pins down, looking into the socket, the rounded (-) end is on the left, over pad 1. So pad 1 = GND, pad 2 = VBUS (flat, +). The EasyEDA 3D model suggested the opposite; the physical part wins.
 
 ## Open items
+- Bulk is ceramic only: check the 8-node chain for bus ringing on the bench (scope VBUS at the last node under load). Fix off-board if needed.
 - Kelvin taps: net ties on the shunt pads (layout rule in the design doc; DRC cannot check it).
 - Overcurrent comparators trip one current direction each; firmware thresholds must account for it.

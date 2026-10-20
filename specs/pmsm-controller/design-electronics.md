@@ -3,7 +3,7 @@
 Implements the hardware side of `requirements.md`. Firmware design is a separate doc (`design-firmware.md`).
 
 ## Overview
-- One 50 × 50 mm, 4-layer board per motor: STM32G474 + DRV8353S + LM5008A buck + 6 MOSFETs + AS5047P encoder + CAN FD, daisy-chained by XT30 power and JST-GH CAN.
+- One 45 × 45 mm, 4-layer board per motor, parts on both sides: STM32G474 + DRV8353S + LM5008A buck + 6 MOSFETs + AS5047P encoder + CAN FD, daisy-chained by XT30 power and JST-GH CAN.
 - Guiding rule: minimum part count. Protection and isolation live off-board (anti-spark switch, regen clamp, isolated PC adapters); bus current is computed in firmware, not sensed.
 
 ```mermaid
@@ -45,15 +45,15 @@ flowchart LR
 - Encoder: ams AS5047P-ATSM, TSSOP-14, alone on the motor-facing (bottom) side at board center. JLC C962063. 14-bit SPI, dynamic angle error compensation (built-in latency correction), designed for motor commutation, rated to 28 krpm. 3.3 V operation per datasheet (DS000324 v2-00, Power Management, Figure 10): VDD and VDD3V3 tied together to the 3.3 V rail (3.0 to 3.6 V), one 100 nF decoupling capacitor. 15 mA. SPI mode 1, up to 10 MHz, on its own SPI port (SPI3) so USB-only readout never clocks the unpowered DRV.
 - CAN: TI TCAN3413DRBR, VSON-8 3×3, 3.3 V only, CAN FD to 8 Mbps, ±58 V bus-fault rated (no extra TVS). JLC C22445415. Placed within a few mm of the CAN connectors. Termination: 120 Ω across CANH/CANL through a 1-position SMD slide DIP switch (JLC C6386918), on at the first and last board (FR38). Connector GND pin to board ground through 100 Ω so CAN GND never carries chain return current.
 - Logic power: LM5008A buck 5 V and USB VBUS 5 V, OR'd by two B5819W Schottky diodes (SOD-123, 40 V 1 A, JLC basic C8598), into AP2112K-3.3 LDO (Diodes Inc, SOT-23-5, 600 mA, 250 mV typ dropout, JLC C51118). USB-C sink only: 5.1 kΩ on CC1/CC2, no PD. USB ESD: USBLC6-2SC6 (JLC C2687116). 1 µF on USB VBUS at the connector (USB max 10 µF).
-- Bulk capacitance: 4 × 47 µF 80 V polymer, 10 × 10 mm, 2.7 A ripple, 30 mΩ (MA80V47M10X10, JLC C54321633; 80 V ≥ 1.2 × 54 V hard trip) + 6 × 4.7 µF 100 V X7R 1210 at the bridge. Ripple current at 20 A RMS is about 13 A.
+- Bulk capacitance: ceramics only, 16 × 4.7 µF 100 V X7R 1210 (JLC C381466), about 2 µF each at 48 V (32 µF effective). One per phase sits at the half-bridge (HS drain to shunt GND end) with a 100 nF 100 V 0603 beside it (C50-C52, JLC C113803, same part as C12/C18) for the fastest part of each switching edge; two sit on the top side right behind the XT30 power pins (C47, C48); the other 11 sit on the motor-facing side in two groups beside the FET row. They carry the ~13 A RMS ripple at 20 A RMS phase (~0.8 A each). Bus ripple about 5.5 V p-p at 20 A RMS and 20 kHz PWM, about 2.7 V at the 10 A rating; firmware samples VBUS every PWM cycle. No electrolytic: a polymer or electrolytic in parallel takes most of the ripple (lowest impedance) and overheats unless there are several. Open risk: nothing on the board damps the chain cable (2 m, ~1.5 µH with 32 µF resonates near the PWM frequency); verify on the full 8-node chain, fix off-board (capacitor module at the supply, or slower IDRIVE edges) if it rings.
 - Bus voltage: divider 100 kΩ / 5.1 kΩ (about 68 V full scale, 16.6 mV per count) + RC filter → ADC.
 - Board temperature: Murata NCP15XH103F03RC NTC (10 kΩ, B 3380 K, 0402, JLC C77131) next to the MOSFETs, with a 10 kΩ 1% resistor to 3.3 V → ADC (FR28).
 - Bus current (FR37): computed in firmware, I_bus = 1.5 × (Vd·Id + Vq·Iq) / V_bus, about ±10% (ignores switching losses). Same value drives the regen limit (FR33, negative = power returned) and lets the host check the 15 A chain budget (FR35). No sensor.
-- Connectors: power 2 × Amass XT30PW-F female (IN and OUT, JLC C2913282), 15 A continuous, both on the same edge. Female on the board so the live side of every link is shrouded; chain leads are male-to-male. Pad 2 = + (flat end of the housing), pad 1 = − (rounded end), checked on a physical XT30PW-F; CAN 2 × JST-GH 3-pin SM03B-GHS-TB (JLC C514175: CANH, CANL, GND; GND is the reference for the isolated PC adapter); USB-C 16-pin USB 2.0 receptacle. All on board edges.
+- Connectors: power 2 × Amass XT30PW-F female (IN and OUT, JLC C2913282), 15 A continuous, both on the same edge. Female on the board so the live side of every link is shrouded; chain leads are male-to-male. Pad 2 = + (flat end of the housing), pad 1 = − (rounded end), checked on a physical XT30PW-F; CAN 2 × JST-GH 3-pin SM03B-GHS-TB (JLC C514175: CANH, CANL, GND; GND is the reference for the isolated PC adapter); USB-C 16-pin USB 2.0 receptacle. All on one edge (the connector edge), opposite the power stage: top side XT30 IN and XT30 OUT, 19.2 mm apart (as close as the USB-C shield pins under them allow; set 0.8 mm back from the edge so their front pegs clear the USB-C pads); motor-facing side CAN IN, USB-C, CAN OUT, with each JST-GH under its XT30. All five on one side would need about 54 mm.
 - Debug: 5 bare pads in a 2.54 mm row (3V3, SWCLK, GND, SWDIO, NRST), not fitted, for an ST-LINK (the Nucleo's CN4). Debugging only; firmware loads over USB-C. Hand-solder a 1×5 header on the boards you debug. BOOT0 pad next to a 3V3 pad, 10 kΩ pull-down on PB8-BOOT0, for ROM DFU recovery.
 - Status: one bicolor LED (green OK, red fault), not on PC13 to PC15 (3 mA limit).
-- Test pads: SOA/SOB/SOC, VBUS, 5 V, 3V3, nFAULT. No snubber pads: phase-node ringing is controlled by a tight hot loop (layout) and DRV8353S IDRIVE (SPI). A bad ring on the first board means a layout respin.
-- PCB: 4 layers, 2 oz outer copper, 1.6 mm. All parts on top except the encoder; bottom flat for a thermal pad (FR4). M3 holes on 25 mm and 30 mm circles (NFR2).
+- Test pad: one GND pad (TP4) near the power stage for a scope ground. Rails and signals are probed at component pads (decoupling caps, R14-R16 for SOA/SOB/SOC, R6 for nFAULT). No snubber pads: phase-node ringing is controlled by a tight hot loop (layout) and DRV8353S IDRIVE (SPI). A bad ring on the first board means a layout respin.
+- PCB: 45 × 45 mm, 4 layers, 2 oz outer copper, 1.6 mm, corners rounded r 2 mm. Parts on both sides, no heatsink (FR4). Top: XT30s, LDO between them, MCU, DRV8353S, buck, the six MOSFETs in one row along the power edge, motor wire pads J3-J5 below the FETs between the bottom holes, termination switch. Motor-facing side: encoder at the center (silkscreen ring marks the magnet area, no other parts within 7.5 mm of its center), USB-C and the CAN connectors (4.25 mm tall: the actuator leaves ≥ 5 mm under that strip), each phase's shunt and 4.7 µF + 100 nF directly under its FET pair, the bulk cap groups, diode-OR, CAN transceiver, ADC filters, SWD pads, BOOT0 pad. Fabrication: order with "Edge rails/fiducials: added by JLCPCB" (required for their standard assembly; boards under 70 × 70 mm get two removable process edges with the fiducials on them) and ask for mouse-bite (routed tab) joints, not V-cut, in the order remark; the bulk caps along the side edges lie parallel to the edge, ≥ 1.2 mm in. 4 × M3 holes in the corners, 2.8 mm in from each edge (39.4 mm square pattern): the bottom pair clears the end FETs, and a 5.5 mm M3 head stays on the board. M3 rather than M4: an M4 head needs about 9 mm.
 
 ## Supporting components (per each chip's datasheet)
 | Chip | Pin / function | Part | Source |
@@ -88,10 +88,13 @@ flowchart LR
 | USBLC6-2SC6 | VBUS, D+, D− | no external parts | ST datasheet |
 
 ## Layout rules
-- Encoder field: XT30 IN and OUT on the same edge so pass-through current and its return never cross the board center. Bridge and phase traces ≥ 12 to 15 mm from the encoder. Every high-current path routed with its return on the adjacent layer so the fields cancel.
+- Board edges: connector edge (J1 XT30 IN and J2 XT30 OUT on top; J7 CAN IN, J9 USB-C, J8 CAN OUT on the bottom) opposite the power-stage edge (Q1-Q6 on top, shunts and per-phase caps under them, J3-J5 motor wire pads between the bottom holes). Logic (MCU, DRV8353S, buck, LDO, TCAN3413) in between, outside the encoder keep-out. Bottom-side SMD parts ≥ 3 mm from the XT30 power-pin joints so hand or selective soldering does not disturb them. The XT30 ear pegs are metal and get soldered too, but they are small, carry no current and connect to no plane (pads deliberately left unconnected), so they solder in a second; they sit 0.8 mm from the USB-C pins, like the USB-C's own shield pins. A solder bridge from an ear to one USB-C pin is harmless because the ear is floating. The BOOT0 pad (bridged by hand for ROM DFU) and its pull-down ≥ 5 mm from any VBUS copper.
+- Bus feed: the bridge draws up to about 10 A DC (more in 40 A peaks) from the far edge. Route VBUS and GND as a stacked pair (VBUS on one layer, GND on the adjacent layer directly under it) along a side edge, outside the encoder keep-out, never across the board center.
+- Encoder field: XT30 IN and OUT on the same edge so pass-through current and its return run along that edge and never cross the board center. Bridge, bus and shunt copper ≥ 10 mm from the encoder center (the 45 mm board leaves no room for more: 10 mm + FET row + motor pads fills the 22.5 mm to the edge). Basis: the AS5047P needs a 35 to 70 mT magnet and rejects uniform stray fields (DS000324); 40 A in a single conductor 10 mm away makes about 0.8 mT, 2.3 % of 35 mT, and less with its return on the adjacent layer. Every high-current path routed with its return on the adjacent layer so the fields cancel.
 - Pass-through: 15 A as planes on several layers (IPC-2221: about 6.3 mm of 2 oz outer copper for 10 K rise).
-- MCU and JST-GH (both 85 °C parts) on the cool side, away from the MOSFETs.
+- MCU and JST-GH (both 85 °C parts) on the cool side, away from the MOSFETs (the connector edge is the cool side).
 - TCAN3413 within a few mm of the CAN connector pair (short stubs at 5 Mbps).
+- Power stage: each FET pair's 4.7 µF + 100 nF sit on the motor-facing side directly under the pair, so the switching loop runs down through the board and back (vertical loop). Every top-to-bottom transition in the power path (HS drain to cap, LS source to shunt, shunt and cap GND) uses a via array, about 10 or more 0.3 mm vias each (about 1 to 1.5 A continuous per via).
 - Kelvin taps: each shunt's net tie sits on that shunt's own pad: NT1/NT3/NT5 on the top pad of R8/R9/R10 (low-side source side), NT2/NT4/NT6 on the bottom pad (GND side). Never tap the GND plane or a trace carrying phase current. The SPx/SNx pair leaves from the inner edge of the pads and runs side by side to the DRV8353S, away from the power path. DRC cannot check this (the net tie joins the nets anywhere on them), so it is a manual review item on every layout render.
 
 ## Interfaces (MCU pins, UFQFPN-48)
@@ -121,21 +124,23 @@ TIM1 CH2/CH3 sit on PA9/PA10, which also switch the USB-C dead-battery pull-down
 
 USB only: logic runs, DRV8353 unpowered, motion refused (FR48). DRV SPI and control lines held low while VM is absent; encoder still readable on SPI3.
 
-## Thermal budget (20 A RMS, 48 V)
-| Source | Estimate |
-|---|---|
-| MOSFET conduction | 3.6 W |
-| MOSFET switching | 1 to 2.5 W |
-| Shunts, copper | about 1 W |
-| DRV8353 + buck self-heating | about 1.3 W |
-| XT30 contacts at 15 A pass-through (4 × 1.2 mΩ) | about 1.1 W |
-| **Total** | **about 8 to 9.5 W** |
+## Thermal budget (48 V)
+| Source | 10 A RMS (rating) | 20 A RMS (reference) |
+|---|---|---|
+| MOSFET conduction | 0.9 W | 3.6 W |
+| MOSFET switching | 0.5 to 1.25 W | 1 to 2.5 W |
+| Shunts, copper | about 0.25 W | about 1 W |
+| DRV8353 + buck self-heating | about 1.3 W | about 1.3 W |
+| XT30 contacts at 15 A pass-through (4 × 1.2 mΩ) | about 1.1 W | about 1.1 W |
+| **Total** | **about 4 to 5 W** | **about 8 to 9.5 W** |
+
+The 10 A column scales the 20 A estimates: conduction and copper by I², switching by I.
 
 ## Key Decisions
 - D1. Bus: CAN FD, 1 Mbps arbitration / 5 Mbps data. Alternative: classic CAN. Why: 8 nodes × 1 kHz needs about 2 Mbps of payload. Constraint for the protocol: each 1 ms cycle is one broadcast setpoint frame (all 8 nodes, 64 bytes) plus one ≤ 20-byte reply per node, about 0.74 ms of bus time.
 - D2. MCU: STM32G474CEU6. Alternatives: G431, F446, ESP32-S3, ATmega328P. Why: only option passing all hard gates (CAN FD, native USB, 2 firmware images, PWM-synced ADC). See Appendix A.
 - D3. Gate driver: DRV8353S + standalone LM5008A. Alternatives: DRV8353RS (integrated LM5008A, but 1 MHz CSAs too slow), DRV8323RS, DRV8334, DRV8363. Why: no external gate supply, fast CSAs, SPI diagnostics; VM 80 V abs max leaves 28 V over the 52 V setting. See Appendix B.
-- D4. Current ratings: 10 A RMS no heatsink, 20 A RMS with heatsink. Alternative: 20 A no heatsink. Why: a 50 × 50 mm board cannot shed 8 to 9.5 W in still air. At a 10 to 12 V bus the DRV gives only 6 to 7.5 V of gate drive (Rds 3.9 mΩ); FR28 temperature derating covers it, no separate rule. See Appendix C.
+- D4. Current rating: 10 A RMS continuous, no heatsink, 40 A peak for 2 s. Alternatives: 20 A RMS with a heatsink (dropped: the motor-facing side now carries the shunts and caps under the FETs, and the actuator will not use a heatsink); 20 A with no heatsink. Why: a 45 × 45 mm board cannot shed 8 to 9.5 W in still air; 10 A is about 4 to 5 W. At a 10 to 12 V bus the DRV gives only 6 to 7.5 V of gate drive (Rds 3.9 mΩ); FR28 temperature derating covers it, no separate rule. See Appendix C.
 - D5. MOSFET: BSC026N08NS5. Alternatives: BSC021N08NS5 (2.1 mΩ, $2.96), BSC030N08NS5 (3.0 mΩ, $0.82). Why: Infineon quality, good stock, $1.28.
 - D6. Qg limit ≤ 100 nC. Why: DRV8353 datasheet Eq. 12, sinusoidal drive, `I_VCP > 3 × Qg × f_PWM`; worst case 15 mA at 10 V bus and 20 kHz allows 250 nC.
 - D7. Low-side sensing into DRV8353S CSAs. Alternatives: inline (3 external amps), high-side. Why: zero extra parts. Requires the fast (non-R) CSAs and a duty cap leaving a ≥ 2 µs low-side window.
@@ -147,8 +152,8 @@ USB only: logic runs, DRV8353 unpowered, motion refused (FR48). DRV SPI and cont
 - D13. 16 MHz crystal, FDCAN clocked from PLLQ at 85 MHz. Alternatives: 40 MHz crystal (FDCAN straight from HSE), internal HSI. Why: HSI is ±1%, too loose for CAN FD; 40 MHz crystals need CL ≤ 8 pF and ESR ≤ 40 Ω to meet the 1.5 mA/V gm limit, while the 16 MHz basic part has 5× margin; 85 MHz gives whole time quanta at both bit rates.
 - D14. SWD as unfitted 2.54 mm pads. Alternatives: JLC-fitted header (a part on every board for a debug-only port), Tag-Connect TC2030 (cable to buy). Why: SWD is debug only, since firmware loads over USB-C DFU; works with the Nucleo's ST-LINK.
 - D15. Regen: firmware limit (FR33) + flux braking above the OV setting (FR26) + one external regen clamp for power-supply users. Alternative: on-board brake resistor. Why: matches moteus (firmware limits) and ODrive (external Regen Clamp); each board alone absorbs only about 22 mJ between 48 and 52 V.
-- D16. Bulk caps: 4 × 47 µF 80 V polymer + 6 × 4.7 µF 100 V ceramic. 63 V parts fail the 1.2 × 54 V derating. Alternative: 1 polymer + 4 ceramics. Why: about 13 A ripple at 20 A RMS; each polymer is rated 2.7 A (10.8 A total), ceramics carry the high-frequency share.
-- D17. No per-board fuse. Why: user choice; a shorted board can take down the chain.
+- D16. Bulk caps: 16 × 4.7 µF 100 V 1210 ceramics, no polymer. Alternatives: 4 × 47 µF polymer + 6 ceramics (~560 mm² as SMD, did not fit with 4 edge holes; ~290 mm² as 8 mm through-hole); 1 polymer or electrolytic + ceramics (that one cap takes 2 to 8 A of ripple and overheats). Why: smallest area (~250 mm²) that carries 13 A of ripple; cable damping moves to a bench check.
+- D17. No per-board fuse; one fuse at the supply instead (B8). Why: user choice; a shorted board still takes down the chain, but the fuse stops the supply or battery from feeding the short.
 
 ## Parts to buy (off-board)
 | # | Item | Qty | Requirement |
@@ -157,12 +162,18 @@ USB only: logic runs, DRV8353 unpowered, motion refused (FR48). DRV SPI and cont
 | B2 | ADuM3160 USB isolator module (12 Mbps full speed, 2.5 kV) | 1 | FR49 |
 | B3 | PEAK PCAN-USB FD (500 V isolated); macOS via MacCAN PCBUSB library | 1 | FR49, FR55 |
 | B4 | Diametric magnet 6 × 2.5 mm N35 (Radial Magnets 9042, DigiKey; not sold by JLC) | 1 per motor | Encoder |
-| B5 | 40 × 40 × 30 mm finned heatsink + thermal pad (20 A rating only) | 1 per board, optional | FR4 |
 | B6 | XT30 male-to-male power jumpers, JST-GH 3-pin CAN jumpers (pin 1 to pin 1) | per chain link | FR34 |
-| B7 | Regen clamp / brake-resistor module, ≥ 56 V rated, for power-supply use | 1 per chain | FR33 |
+| B7 | Regen clamp / brake-resistor module across the bus at the supply end: a comparator switches a power resistor (a few Ω, 50 to 100 W) on when the bus rises; turn-on about 53 V (above the 52 V regen setting, below the 54 V trip), parts ≥ 60 V rated. **Required whenever the chain runs from a power supply** (a battery absorbs braking energy; a supply cannot) | 1 per chain | FR33 |
+| B8 | Fuse or DC circuit breaker in the supply's positive lead, before the first board: about 20 A, **rated ≥ 60 V DC** (most automotive blade fuses are 32 V and may not break a 48 V DC arc). **Required for every chain** | 1 per chain | FR40 |
+
+## Use notes (go into the user guide)
+- Never connect or disconnect a board, power lead or the supply while the chain is powered. Switch the supply off first, or plug in through the XT90-S anti-spark connector (B1). Why: plugging into a live bus makes the cable inductance and the board's ceramic capacitors ring to about twice the bus voltage; at 48 V that is about 90 V, above the 80 V rating of the MOSFETs and the gate driver. Unplugging under load makes a similar spike. At a 24 V bus the ring stays under about 50 V.
+- Fit the B8 fuse on every chain, and the B7 regen clamp whenever the chain runs from a power supply.
+- Use bought, pre-made male-to-male XT30 leads, or check each hand-made lead with a meter: a reversed lead shorts the bus through every MOSFET's body diode.
+- Connect a PC only through the isolated USB adapter (B2) or the isolated CAN adapter (B3).
 
 ## Open Questions
-- OQ1. Thermal acceptance test on the first board: lock the rotor at the worst-case electrical angle (one leg carrying the most current), hold 10 A (no heatsink) then 20 A (with B5), with 15 A flowing through the pass-through at the same time, until steady; pass if ≤ 90 °C at 25 °C ambient. Derate published ratings if it fails.
+- OQ1. Thermal acceptance test on the first board: lock the rotor at the worst-case electrical angle (one leg carrying the most current), hold 10 A (no heatsink), with 15 A flowing through the pass-through at the same time, until steady; pass if ≤ 90 °C at 25 °C ambient. Derate published ratings if it fails.
 - OQ2. Pick the B7 regen clamp model (ODrive Regen Clamp is sold out).
 - OQ3. Check CSA settling and the duty cap on the first board (scope SOx at maximum duty).
 - OQ4. Check HSE frequency on the first board (MCO output vs a frequency counter); trim the 10 pF load caps if off by more than the crystal's ±10 ppm.
@@ -248,7 +259,7 @@ Steady-state max phase current from mjbots' moteus model (`docs/mpat.html`, meas
 | n1 (46×46) | 24 / 48 V | 9.4 / 4.2 A | 11.2 / 6.0 A | 14.5 / 9.3 A | 21.8 / 16.7 A | 60 °C |
 | x1 (56×56) | 24 / 48 V | 27.0 / 22.0 A | 26.0 / 21.0 A | 32.7 / 27.2 A | 51.4 / 44.1 A | 100 °C |
 
-The r4 is the closest in size. Our 90 °C limit adds headroom over moteus's 60 °C. All moteus boards specify a 10 V minimum bus and derate power at high voltage, not current at low voltage. Ratings are validated by OQ1.
+The n1 (46×46) is the closest in size: 4.2 A at 48 V and 9.4 A at 24 V with no cooling, at a 60 °C limit. Our 90 °C limit allows about 1.9× the temperature rise, so roughly 1.35× the current (losses scale about with I²): about 5.7 A at 48 V, 12.7 A at 24 V by that scaling. The 10 A no-heatsink rating at 48 V is therefore not backed by this model and depends on OQ1; expect to derate it at 48 V. All moteus boards specify a 10 V minimum bus and derate power at high voltage, not current at low voltage. Ratings are validated by OQ1.
 
 ## Appendix D: Buck regulator values
 
