@@ -113,7 +113,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "4 x M3 mounting holes near the corners; standoffs set the board-to-motor spacing. Encoder at board center, motor side."
+	(text "4 x M2.5 mounting holes near the corners; standoffs set the board-to-motor spacing. Encoder at board center, motor side."
 		(exclude_from_sim no)
 		(at 50.8 264.16 0)
 		(effects
@@ -586,16 +586,6 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 177.8) (xy 119.38 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a93de096-07aa-4e37-9d0c-7c14bc9afafa")
-	)
-	(wire
-		(pts
 			(xy 368.3 38.1) (xy 373.38 38.1)
 		)
 		(stroke
@@ -633,16 +623,6 @@
 			(type default)
 		)
 		(uuid "ab3b2b32-b121-44fb-ad9a-cec0054412e3")
-	)
-	(wire
-		(pts
-			(xy 114.3 180.34) (xy 119.38 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ab415c33-2d8c-49b7-a74a-7b91b52e4d20")
 	)
 	(wire
 		(pts
@@ -803,16 +783,6 @@
 			(type default)
 		)
 		(uuid "d7bd7944-dd51-41e8-bdb5-f3709f7095e0")
-	)
-	(wire
-		(pts
-			(xy 50.8 154.94) (xy 45.72 154.94)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d833c3f6-c3ef-484b-8f68-18bf94917821")
 	)
 	(wire
 		(pts
@@ -1014,16 +984,6 @@
 		)
 		(uuid "0bd2176e-0932-418e-bf8e-9a9b95a32740")
 	)
-	(label "ENC_SCK"
-		(at 119.38 177.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "0f985cc0-ce66-4196-81b9-98a676634e73")
-	)
 	(label "INHC"
 		(at 172.72 53.34 180)
 		(effects
@@ -1034,7 +994,7 @@
 		)
 		(uuid "164b1b8c-325c-4844-beef-febdb44e1052")
 	)
-	(label "ENC_SCK"
+	(label "DRV_SCLK"
 		(at 172.72 152.4 180)
 		(effects
 			(font
@@ -1293,26 +1253,6 @@
 			(justify left bottom)
 		)
 		(uuid "6ba402c0-cc1a-460c-9021-08952965c658")
-	)
-	(label "ENC_MOSI"
-		(at 119.38 180.34 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "6c0c9b6a-ef36-4458-ae02-a6e52d69b93b")
-	)
-	(label "ENC_MISO"
-		(at 45.72 154.94 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "6f9f88e4-292c-4a9c-9306-b1c87ff7dc9c")
 	)
 	(label "INLB"
 		(at 172.72 50.8 180)
@@ -1664,7 +1604,7 @@
 		)
 		(uuid "cc012be3-6216-4780-83a2-aba9d37b56be")
 	)
-	(label "ENC_MISO"
+	(label "DRV_SDO"
 		(at 246.38 149.86 0)
 		(effects
 			(font
@@ -1734,7 +1674,7 @@
 		)
 		(uuid "ee4ccfbf-f827-42c7-ad23-c28176f5bdb7")
 	)
-	(label "ENC_MOSI"
+	(label "DRV_SDI"
 		(at 172.72 154.94 180)
 		(effects
 			(font
@@ -1786,7 +1726,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2.5"
 			(at 50.8 277.495 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1797,7 +1737,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
 			(at 50.8 274.32 0)
 			(hide yes)
 			(show_name no)
@@ -1859,7 +1799,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2.5"
 			(at 66.04 277.495 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1870,7 +1810,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
 			(at 66.04 274.32 0)
 			(hide yes)
 			(show_name no)
@@ -1932,7 +1872,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2.5"
 			(at 96.52 277.495 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -1943,7 +1883,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
 			(at 96.52 274.32 0)
 			(hide yes)
 			(show_name no)
@@ -2005,7 +1945,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "M3"
+		(property "Value" "M2.5"
 			(at 81.28 277.495 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -2016,7 +1956,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
+		(property "Footprint" "MountingHole:MountingHole_2.7mm_M2.5"
 			(at 81.28 274.32 0)
 			(hide yes)
 			(show_name no)
@@ -2622,16 +2562,6 @@
 				(justify left)
 			)
 		)
-		(pin "ENC_MISO" input
-			(at 50.8 154.94 180)
-			(uuid "85afd0df-deef-4134-856e-1b76f3d8b514")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
 		(pin "CAN_RX" input
 			(at 50.8 157.48 180)
 			(uuid "ce01478f-a891-41d5-acd0-82d8a3f1c970")
@@ -2782,26 +2712,6 @@
 				(justify right)
 			)
 		)
-		(pin "ENC_SCK" output
-			(at 114.3 177.8 0)
-			(uuid "d24b8761-3e03-4447-b0ef-50f12daeb010")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(pin "ENC_MOSI" output
-			(at 114.3 180.34 0)
-			(uuid "96b03225-3405-4009-8acd-a8c7bae446d8")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
 		(pin "ENC_CS" output
 			(at 114.3 182.88 0)
 			(uuid "17821eb1-9cb3-44d1-a9ce-129167e036e6")
@@ -2908,7 +2818,7 @@
 				(justify left)
 			)
 		)
-		(pin "ENC_SCK" input
+		(pin "DRV_SCLK" input
 			(at 177.8 152.4 180)
 			(uuid "490b9ef7-805a-472f-9e5e-1fe2ac8a6620")
 			(effects
@@ -2918,7 +2828,7 @@
 				(justify left)
 			)
 		)
-		(pin "ENC_MOSI" input
+		(pin "DRV_SDI" input
 			(at 177.8 154.94 180)
 			(uuid "1613ce33-74ff-483a-8fd6-012e5033c4ad")
 			(effects
@@ -2928,7 +2838,7 @@
 				(justify left)
 			)
 		)
-		(pin "ENC_MISO" output
+		(pin "DRV_SDO" output
 			(at 241.3 149.86 0)
 			(uuid "ffe072c7-e465-4bf1-a473-e593e5d0f0d8")
 			(effects

@@ -1,0 +1,1078 @@
+{
+ "net_groups": {
+  "hv": [
+   "VBUS",
+   "PHASE_*",
+   "BUCK_SW",
+   "BUCK_BST",
+   "DRV_VCP",
+   "DRV_CPH",
+   "DRV_CPL",
+   "GHA",
+   "GHB",
+   "GHC"
+  ],
+  "sense": [
+   "?_SENSE_?",
+   "SO?",
+   "SO?_ADC"
+  ],
+  "plane": [
+   "GND"
+  ]
+ },
+ "stackup": {
+  "F": 2,
+  "In1": 1,
+  "In2": 1,
+  "In3": 1,
+  "In4": 1,
+  "B": 2
+ },
+ "signal_layers": [
+  "F",
+  "In2",
+  "In3",
+  "B"
+ ],
+ "current_paths": [
+  {
+   "name": "pass-through VBUS",
+   "net": "VBUS",
+   "from": "J1.2",
+   "to": "J2.2",
+   "peak": 0,
+   "why": "chain budget 10 A, no motor peaks"
+  },
+  {
+   "name": "pass-through GND",
+   "net": "GND",
+   "from": "J1.1",
+   "to": "J2.1",
+   "peak": 0,
+   "why": "chain budget 10 A, no motor peaks"
+  },
+  {
+   "name": "VBUS to Q1",
+   "net": "VBUS",
+   "from": "J1.2",
+   "to": "Q1"
+  },
+  {
+   "name": "phase A",
+   "net": "PHASE_A",
+   "from": "Q1",
+   "to": "J3"
+  },
+  {
+   "name": "shunt A",
+   "net": "SHUNT_A",
+   "from": "Q2",
+   "to": "R8"
+  },
+  {
+   "name": "VBUS to Q3",
+   "net": "VBUS",
+   "from": "J1.2",
+   "to": "Q3"
+  },
+  {
+   "name": "phase B",
+   "net": "PHASE_B",
+   "from": "Q3",
+   "to": "J4"
+  },
+  {
+   "name": "shunt B",
+   "net": "SHUNT_B",
+   "from": "Q4",
+   "to": "R9"
+  },
+  {
+   "name": "VBUS to Q5",
+   "net": "VBUS",
+   "from": "J1.2",
+   "to": "Q5"
+  },
+  {
+   "name": "phase C",
+   "net": "PHASE_C",
+   "from": "Q5",
+   "to": "J5"
+  },
+  {
+   "name": "shunt C",
+   "net": "SHUNT_C",
+   "from": "Q6",
+   "to": "R10"
+  }
+ ],
+ "checks": {
+  "decoupling": [
+   [
+    "C24",
+    "U4",
+    "23",
+    "+3V3",
+    2
+   ],
+   [
+    "C25",
+    "U4",
+    "35",
+    "+3V3",
+    2
+   ],
+   [
+    "C26",
+    "U4",
+    "48",
+    "+3V3",
+    2
+   ],
+   [
+    "C28",
+    "U4",
+    "21",
+    "+3V3",
+    2
+   ],
+   [
+    "C30",
+    "U4",
+    "20",
+    "+3V3",
+    2
+   ],
+   [
+    "C29",
+    "U4",
+    "21",
+    "+3V3",
+    5
+   ],
+   [
+    "C31",
+    "U4",
+    "20",
+    "+3V3",
+    5
+   ],
+   [
+    "C27",
+    "U4",
+    "1",
+    "+3V3",
+    5
+   ],
+   [
+    "C23",
+    "U3",
+    "24",
+    "+3V3",
+    2
+   ],
+   [
+    "C18",
+    "U3",
+    "3",
+    "VBUS",
+    2
+   ],
+   [
+    "C19",
+    "U3",
+    "5",
+    "DRV_VCP",
+    2
+   ],
+   [
+    "C20",
+    "U3",
+    "1",
+    "DRV_CPL",
+    2
+   ],
+   [
+    "C21",
+    "U3",
+    "40",
+    "DRV_VGLS",
+    2
+   ],
+   [
+    "C22",
+    "U3",
+    "38",
+    "DRV_DVDD",
+    2
+   ],
+   [
+    "C41",
+    "U6",
+    "3",
+    "+3V3",
+    2
+   ],
+   [
+    "C42",
+    "U6",
+    "5",
+    "+3V3",
+    2
+   ],
+   [
+    "C40",
+    "U5",
+    "11",
+    "+3V3",
+    2
+   ],
+   [
+    "C16",
+    "U2",
+    "1",
+    "+5V",
+    2
+   ],
+   [
+    "C17",
+    "U2",
+    "5",
+    "+3V3",
+    2
+   ],
+   [
+    "C11",
+    "U1",
+    "8",
+    "VBUS",
+    5
+   ],
+   [
+    "C12",
+    "U1",
+    "8",
+    "VBUS",
+    2
+   ],
+   [
+    "C13",
+    "U1",
+    "7",
+    "BUCK_VCC",
+    2
+   ],
+   [
+    "C14",
+    "U1",
+    "2",
+    "BUCK_BST",
+    2
+   ]
+  ],
+  "pad_distance": [
+   [
+    "Y1",
+    "1",
+    "U4",
+    "5",
+    5,
+    "crystal to MCU"
+   ],
+   [
+    "U7",
+    "6",
+    "J9",
+    "A6",
+    5,
+    "USB ESD to connector"
+   ]
+  ],
+  "keepout_distance": [
+   {
+    "label": "phase copper to encoder",
+    "center_ref": "U5",
+    "nets": [
+     "PHASE_*"
+    ],
+    "refs": [
+     "Q*",
+     "J3",
+     "J4",
+     "J5"
+    ],
+    "min": 10
+   },
+   {
+    "label": "bus copper to encoder",
+    "center_ref": "U5",
+    "nets": [
+     "VBUS"
+    ],
+    "refs": [
+     "Q*",
+     "J1",
+     "J2",
+     "C1",
+     "C2",
+     "C3",
+     "C4",
+     "C5",
+     "C6",
+     "C7",
+     "C8",
+     "C9",
+     "C10",
+     "C44",
+     "C45",
+     "C46",
+     "C47",
+     "C48",
+     "C49"
+    ],
+    "min": 10
+   },
+   {
+    "label": "crystal to switch nodes",
+    "center_ref": "Y1",
+    "nets": [
+     "PHASE_*",
+     "BUCK_SW"
+    ],
+    "refs": [
+     "Q*",
+     "D1",
+     "L1",
+     "U1"
+    ],
+    "min": 10
+   }
+  ]
+ },
+ "freerouting": {
+  "drop_zones": [
+   "GND_top",
+   "GND_bot",
+   "In1_no_tracks"
+  ],
+  "power_layers": [
+   "In1"
+  ],
+  "drop_nets": [
+   "GND"
+  ],
+  "hv_classes": [
+   "HV",
+   "HV_SIG",
+   "GATE_HS"
+  ],
+  "sense_classes": [
+   "SENSE"
+  ],
+  "hv_other_um": 200,
+  "sense_hv_um": 600,
+  "max_passes": 100,
+  "timeout_s": 2400
+ },
+ "fab": {
+  "cpl_rotation": {
+   "*USB_C_Receptacle_HRO_TYPE-C-31-M-12*": 180,
+   "*JST_GH_SM03B-GHS-TB*": 180
+  },
+  "exclude_from_assembly": []
+ },
+ "corridors": [
+  {
+   "name": "pass-through VBUS top",
+   "layers": [
+    "F"
+   ],
+   "width": 2.5,
+   "from": "J1.2",
+   "to": "J2.2",
+   "net": "VBUS",
+   "forbid": [
+    "footprints"
+   ]
+  },
+  {
+   "name": "PWM bus lane",
+   "layers": [
+    "F",
+    "B"
+   ],
+   "width": 2.0,
+   "path": [
+    [
+     127.0,
+     120.6
+    ],
+    [
+     131.0,
+     118.6
+    ],
+    [
+     136.0,
+     118.6
+    ]
+   ],
+   "forbid": [
+    "footprints"
+   ]
+  }
+ ],
+ "blocks": [],
+ "small_parts": [
+  {
+   "ref": "C23",
+   "anchor": "U3.24",
+   "net": "+3V3",
+   "side": "F",
+   "reach": 3,
+   "other": [
+    "25",
+    "GND"
+   ],
+   "rots": [
+    45,
+    135,
+    225,
+    315,
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C20",
+   "anchor": "U3.2",
+   "net": "DRV_CPH",
+   "side": "F",
+   "reach": 5,
+   "other": [
+    "1",
+    "DRV_CPL"
+   ],
+   "rots": [
+    45,
+    135,
+    225,
+    315,
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C19",
+   "anchor": "U3.5",
+   "net": "DRV_VCP",
+   "side": "F",
+   "reach": 4,
+   "other": [
+    "4",
+    "VBUS"
+   ],
+   "rots": [
+    45,
+    135,
+    225,
+    315,
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C18",
+   "anchor": "U3.3",
+   "net": "VBUS",
+   "side": "F",
+   "reach": 4,
+   "other": [
+    "41",
+    "GND"
+   ],
+   "rots": [
+    45,
+    135,
+    225,
+    315,
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "R14",
+   "anchor": "U4.8",
+   "net": "SOA_ADC",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C35",
+   "anchor": "U4.8",
+   "net": "SOA_ADC",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "R15",
+   "anchor": "U4.9",
+   "net": "SOB_ADC",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C36",
+   "anchor": "U4.9",
+   "net": "SOB_ADC",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "R16",
+   "anchor": "R15.1",
+   "net": "SOC",
+   "side": "B",
+   "reach": 5,
+   "rots": [
+    90,
+    270,
+    0,
+    180
+   ]
+  },
+  {
+   "ref": "C37",
+   "anchor": "U4.17",
+   "net": "SOC_ADC",
+   "side": "either",
+   "reach": 4,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "R19",
+   "anchor": "U4.11",
+   "net": "NTC_SENSE",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C39",
+   "anchor": "U4.11",
+   "net": "NTC_SENSE",
+   "side": "B",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C34",
+   "anchor": "U4.7",
+   "net": "NRST",
+   "side": "either",
+   "reach": 5,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C29",
+   "anchor": "U4.21",
+   "net": "+3V3",
+   "side": "B",
+   "reach": 5,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "Y1",
+   "anchor": "U4.5",
+   "net": "XTAL_IN",
+   "other": [
+    "6",
+    "XTAL_OUT"
+   ],
+   "side": "either",
+   "reach": 5,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C32",
+   "anchor": "Y1.1",
+   "net": "XTAL_IN",
+   "side": "either",
+   "reach": 3,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C33",
+   "anchor": "Y1.3",
+   "net": "XTAL_OUT",
+   "side": "either",
+   "reach": 3,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C27",
+   "anchor": "U4.1",
+   "net": "+3V3",
+   "side": "either",
+   "reach": 5,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "C24",
+   "anchor": "U4.23",
+   "net": "+3V3",
+   "side": "either",
+   "reach": 4,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  },
+  {
+   "ref": "R25",
+   "anchor": "U3.30",
+   "net": "DRV_nSCS",
+   "side": "either",
+   "reach": 6,
+   "rots": [
+    0,
+    90,
+    180,
+    270
+   ]
+  }
+ ],
+ "keepout_circles": [
+  [
+   125.0,
+   125.0,
+   7.5,
+   "B"
+  ]
+ ],
+ "keepout_boxes": [
+  [
+   133.6,
+   129.3,
+   138.6,
+   131.2,
+   "B",
+   "phase C GND vias",
+   []
+  ],
+  [
+   139.3,
+   120.2,
+   140.9,
+   121.3,
+   "FB",
+   "ENC_CS escape",
+   []
+  ]
+ ],
+ "currents": [
+  {
+   "nets": [
+    "VBUS"
+   ],
+   "rms": 10,
+   "rise_c": 25,
+   "peak": 40,
+   "peak_s": 2,
+   "peak_rise_c": 60,
+   "volts": 80,
+   "pour": true,
+   "layers": [
+    "F",
+    "In4",
+    "B"
+   ],
+   "why": "10 A pass-through and bridge feed, 40 A 2 s peak, 80 V DRV abs max"
+  },
+  {
+   "nets": [
+    "PHASE_*"
+   ],
+   "rms": 10,
+   "rise_c": 25,
+   "peak": 40,
+   "peak_s": 2,
+   "peak_rise_c": 60,
+   "volts": 80,
+   "pour": true,
+   "layers": [
+    "F",
+    "In4",
+    "B"
+   ],
+   "why": "phase 10 A RMS, 40 A 2 s"
+  },
+  {
+   "nets": [
+    "SHUNT_*"
+   ],
+   "rms": 10,
+   "rise_c": 25,
+   "peak": 40,
+   "peak_s": 2,
+   "peak_rise_c": 60,
+   "volts": 5,
+   "pour": true,
+   "layers": [
+    "F",
+    "B"
+   ],
+   "why": "low-side source to shunt"
+  },
+  {
+   "nets": [
+    "GND"
+   ],
+   "rms": 10,
+   "rise_c": 25,
+   "peak": 40,
+   "peak_s": 2,
+   "peak_rise_c": 60,
+   "volts": 0,
+   "pour": true,
+   "layers": [
+    "F",
+    "In1",
+    "B"
+   ],
+   "why": "bus return"
+  },
+  {
+   "nets": [
+    "GH?"
+   ],
+   "rms": 0.01,
+   "volts": 80,
+   "why": "IDRIVE 0.6 A peak, ns; width by current (owner: smallest the current allows)",
+   "peak": 0.6,
+   "peak_s": 1e-06
+  },
+  {
+   "nets": [
+    "GL?"
+   ],
+   "rms": 0.01,
+   "volts": 15,
+   "why": "IDRIVE 0.6 A peak, ns; width by current (owner: smallest the current allows)",
+   "peak": 0.6,
+   "peak_s": 1e-06
+  },
+  {
+   "nets": [
+    "BUCK_SW"
+   ],
+   "rms": 0.35,
+   "volts": 80,
+   "why": "LM5008A 350 mA"
+  },
+  {
+   "nets": [
+    "BUCK_BST",
+    "DRV_VCP",
+    "DRV_CPH",
+    "DRV_CPL"
+   ],
+   "rms": 0.02,
+   "volts": 80
+  },
+  {
+   "nets": [
+    "+5V*",
+    "+5V_BUCK"
+   ],
+   "rms": 0.5,
+   "why": "USB 500 mA / buck 350 mA"
+  },
+  {
+   "nets": [
+    "+3V3"
+   ],
+   "rms": 0.3,
+   "why": "AP2112K budget"
+  },
+  {
+   "nets": [
+    "DRV_VGLS",
+    "DRV_DVDD"
+   ],
+   "rms": 0.03
+  }
+ ],
+ "sizing": {
+  "rise_c": 10,
+  "plating_mm": 0.018,
+  "vias": {
+   "signal": [
+    0.2,
+    0.45
+   ],
+   "power": [
+    0.3,
+    0.6
+   ]
+  },
+  "neck_courtyards": [
+   "U*",
+   "J9"
+  ],
+  "pad_exempt_courtyards": [
+   "Q*",
+   "U*"
+  ],
+  "fixed_width_classes": [
+   "USB",
+   "CAN"
+  ]
+ },
+ "planes": [
+  {
+   "net": "GND",
+   "layer": "In1",
+   "own_via": [
+    "C*",
+    "R11",
+    "R22",
+    "U5"
+   ],
+   "via_in_pad": [
+    "R22",
+    "C35",
+    "R11",
+    "C25",
+    "U5"
+   ]
+  },
+  {
+   "net": "VBUS",
+   "layer": "In4",
+   "own_via": [
+    "C*"
+   ]
+  },
+  {
+   "net": "+3V3",
+   "layer": "In4",
+   "own_via": [
+    "C*"
+   ]
+  }
+ ],
+ "place_opt": {
+  "movable": [
+   "C*",
+   "R*",
+   "D*",
+   "TH*",
+   "FB*",
+   "LED*",
+   "Y*"
+  ],
+  "fixed": [
+   "C11",
+   "C12",
+   "C13",
+   "C14",
+   "C15",
+   "C16",
+   "C41",
+   "C42",
+   "C43",
+   "C47",
+   "D1",
+   "D2",
+   "D3",
+   "H1",
+   "H2",
+   "J1",
+   "J2",
+   "J6",
+   "J7",
+   "J8",
+   "J9",
+   "JP1",
+   "L1",
+   "NT1",
+   "NT2",
+   "R1",
+   "R2",
+   "R20",
+   "R22",
+   "R23",
+   "R3",
+   "R4",
+   "R5",
+   "U1",
+   "U2",
+   "U6",
+   "U7"
+  ],
+  "fixed_nets": [
+   "VBUS",
+   "PHASE_*",
+   "SHUNT_*"
+  ],
+  "max_shift": 3.0,
+  "step": 0.25,
+  "rotate": true,
+  "swap": true,
+  "blocks": [
+   "U4"
+  ],
+  "block_shift": 2.0
+ },
+ "pin_swaps": {
+  "why": "STM32G474CEU6 DS12288 Table 13 (AF) and pin I/O structure; nSCS needs FT (DRV pull-up to DVDD 5 V)",
+  "rotations": [
+   90
+  ],
+  "permute": [
+   [
+    "INHA",
+    "INLA"
+   ],
+   [
+    "INHB",
+    "INLB"
+   ],
+   [
+    "INHC",
+    "INLC"
+   ]
+  ],
+  "choose": [
+   {
+    "nets": [
+     "DRV_nSCS"
+    ],
+    "pins": [
+     "PA15",
+     "PB6",
+     "PB7",
+     "PC4",
+     "PC6",
+     "PC13"
+    ]
+   },
+   {
+    "nets": [
+     "DRV_EN",
+     "DRV_nFAULT"
+    ],
+    "pins": [
+     "PA4",
+     "PA15",
+     "PB6",
+     "PB7",
+     "PB10",
+     "PB12",
+     "PC4",
+     "PC6",
+     "PC13"
+    ]
+   }
+  ]
+ },
+ "router": {
+  "sense_exempt_band": 1.0,
+  "max_pops": 600000,
+  "neck_band": 1.0,
+  "hv_keeps_off_sense": true,
+  "route_plane_nets": [
+   "+3V3",
+   "GND"
+  ],
+  "join_any_copper": [
+   "DRV_SDI",
+   "DRV_SDO",
+   "DRV_SCLK",
+   "ENC_CS",
+   "GND",
+   "BOOT0"
+  ],
+  "route_anyway": true
+ }
+}

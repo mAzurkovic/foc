@@ -1092,7 +1092,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "foc_controller:XT30PW-F"
+		(symbol "foc_controller:XT30PW-M"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1109,7 +1109,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "XT30PW-F"
+			(property "Value" "XT30PW-M"
 				(at -7.62 12.7 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1120,7 +1120,7 @@
 					(justify left)
 				)
 			)
-			(property "Footprint" "foc_controller:CONN-TH_XT30PW-F-1"
+			(property "Footprint" "foc_controller:CONN-TH_XT30PW-M-1"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1153,7 +1153,7 @@
 					)
 				)
 			)
-			(symbol "XT30PW-F_0_1"
+			(symbol "XT30PW-M_0_1"
 				(rectangle
 					(start -7.62 3.81)
 					(end 7.62 -3.81)
@@ -1166,7 +1166,7 @@
 					)
 				)
 			)
-			(symbol "XT30PW-F_1_1"
+			(symbol "XT30PW-M_1_1"
 				(pin passive line
 					(at 10.16 -1.27 180)
 					(length 2.54)
@@ -1901,7 +1901,7 @@
 		)
 		(uuid "041d671c-5307-40d7-847e-1861f3a0ffaf")
 	)
-	(text "Bus IN/OUT: J1 and J2 pins joined by wide planes, 15 A pass-through.\nNo on-board inrush limiting: external XT90-S anti-spark at the supply.\nBoth female (shrouded live side); chain leads are male-male. Pad 2 = + (flat end), pad 1 = - (rounded end)."
+	(text "Bus IN/OUT: J1 and J2 pins joined by wide planes, 15 A pass-through.\nNo on-board inrush limiting: external XT90-S anti-spark at the supply.\nBoth male (XT30PW-M); chain leads are female-female. Pad 2 = + (flat, chamfered end), pad 1 = - (rounded end)."
 		(exclude_from_sim no)
 		(at 22.86 165.1 0)
 		(effects
@@ -5620,7 +5620,7 @@
 		)
 	)
 	(symbol
-		(lib_id "foc_controller:XT30PW-F")
+		(lib_id "foc_controller:XT30PW-M")
 		(at 45.72 66.04 0)
 		(unit 1)
 		(body_style 1)
@@ -5641,7 +5641,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "XT30PW-F bus IN"
+		(property "Value" "XT30PW-M bus IN"
 			(at 38.1 78.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5652,7 +5652,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "foc_controller:CONN-TH_XT30PW-F-1"
+		(property "Footprint" "foc_controller:CONN-TH_XT30PW-M-1"
 			(at 45.72 66.04 0)
 			(hide yes)
 			(show_name no)
@@ -5683,7 +5683,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2913282"
+		(property "LCSC" "C431092"
 			(at 48.26 71.1199 0)
 			(hide yes)
 			(show_name no)
@@ -5695,7 +5695,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "XT30PW-F20.G.Y"
+		(property "MPN" "XT30PW-M30.G.Y"
 			(at 48.26 71.1199 0)
 			(hide yes)
 			(show_name no)
@@ -9305,7 +9305,7 @@
 		)
 	)
 	(symbol
-		(lib_id "foc_controller:XT30PW-F")
+		(lib_id "foc_controller:XT30PW-M")
 		(at 45.72 121.92 0)
 		(unit 1)
 		(body_style 1)
@@ -9326,7 +9326,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "XT30PW-F bus OUT"
+		(property "Value" "XT30PW-M bus OUT"
 			(at 38.1 134.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9337,7 +9337,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "foc_controller:CONN-TH_XT30PW-F-1"
+		(property "Footprint" "foc_controller:CONN-TH_XT30PW-M-1"
 			(at 45.72 121.92 0)
 			(hide yes)
 			(show_name no)
@@ -9368,7 +9368,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2913282"
+		(property "LCSC" "C431092"
 			(at 48.26 126.9999 0)
 			(hide yes)
 			(show_name no)
@@ -9380,7 +9380,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "XT30PW-F20.G.Y"
+		(property "MPN" "XT30PW-M30.G.Y"
 			(at 48.26 126.9999 0)
 			(hide yes)
 			(show_name no)

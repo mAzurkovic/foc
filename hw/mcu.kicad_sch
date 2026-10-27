@@ -5,7 +5,7 @@
 	(uuid "47bef637-cf65-4bc9-a622-1e6108c47ad7")
 	(paper "A3")
 	(title_block
-		(title "MCU STM32G474")
+		(title "MCU STM32G473")
 		(date "2026-10-19")
 		(rev "A")
 		(company "FOC controller")
@@ -1148,7 +1148,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "MCU_ST_STM32G4:STM32G474CEUx"
+		(symbol "MCU_ST_STM32G4:STM32G473CEUx"
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
@@ -1165,7 +1165,7 @@
 					(justify left)
 				)
 			)
-			(property "Value" "STM32G474CEUx"
+			(property "Value" "STM32G473CEUx"
 				(at 7.62 44.45 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1188,7 +1188,7 @@
 					(justify right)
 				)
 			)
-			(property "Datasheet" "https://www.st.com/resource/en/datasheet/stm32g474ce.pdf"
+			(property "Datasheet" "https://www.st.com/resource/en/datasheet/stm32g473ce.pdf"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1210,7 +1210,7 @@
 					)
 				)
 			)
-			(property "ki_keywords" "Arm Cortex-M4 STM32G4 STM32G4x4"
+			(property "ki_keywords" "Arm Cortex-M4 STM32G4 STM32G4x3"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -1232,7 +1232,7 @@
 					)
 				)
 			)
-			(symbol "STM32G474CEUx_0_1"
+			(symbol "STM32G473CEUx_0_1"
 				(rectangle
 					(start -15.24 -43.18)
 					(end 15.24 43.18)
@@ -1245,7 +1245,7 @@
 					)
 				)
 			)
-			(symbol "STM32G474CEUx_1_1"
+			(symbol "STM32G473CEUx_1_1"
 				(pin power_in line
 					(at -5.08 45.72 270)
 					(length 2.54)
@@ -1700,7 +1700,6 @@
 					(alternate "ADC1_IN15" bidirectional line)
 					(alternate "ADC3_IN12" bidirectional line)
 					(alternate "COMP4_INP" bidirectional line)
-					(alternate "HRTIM1_FLT5" bidirectional line)
 					(alternate "OPAMP2_VINP" bidirectional line)
 					(alternate "OPAMP2_VINP_SEC" bidirectional line)
 					(alternate "OPAMP3_VINP" bidirectional line)
@@ -1733,7 +1732,6 @@
 					(alternate "ADC3_IN1" bidirectional line)
 					(alternate "COMP1_INP" bidirectional line)
 					(alternate "COMP4_OUT" bidirectional line)
-					(alternate "HRTIM1_SCOUT" bidirectional line)
 					(alternate "LPUART1_DE" bidirectional line)
 					(alternate "LPUART1_RTS" bidirectional line)
 					(alternate "OPAMP3_VOUT" bidirectional line)
@@ -1767,7 +1765,6 @@
 					(alternate "ADC4_EXTI2" bidirectional line)
 					(alternate "ADC5_EXTI2" bidirectional line)
 					(alternate "COMP4_INM" bidirectional line)
-					(alternate "HRTIM1_SCIN" bidirectional line)
 					(alternate "I2C3_SMBA" bidirectional line)
 					(alternate "LPTIM1_OUT" bidirectional line)
 					(alternate "OPAMP3_VINM" bidirectional line)
@@ -1837,7 +1834,6 @@
 					(alternate "DAC2_EXTI10" bidirectional line)
 					(alternate "DAC3_EXTI10" bidirectional line)
 					(alternate "DAC4_EXTI10" bidirectional line)
-					(alternate "HRTIM1_FLT3" bidirectional line)
 					(alternate "LPUART1_RX" bidirectional line)
 					(alternate "OPAMP3_VINM" bidirectional line)
 					(alternate "OPAMP3_VINM1" bidirectional line)
@@ -1891,7 +1887,6 @@
 					(alternate "ADC2_EXTI11" bidirectional line)
 					(alternate "ADC2_IN14" bidirectional line)
 					(alternate "COMP6_INP" bidirectional line)
-					(alternate "HRTIM1_FLT4" bidirectional line)
 					(alternate "LPUART1_TX" bidirectional line)
 					(alternate "OPAMP4_VINP" bidirectional line)
 					(alternate "OPAMP4_VINP_SEC" bidirectional line)
@@ -1921,7 +1916,6 @@
 					(alternate "ADC4_IN3" bidirectional line)
 					(alternate "COMP7_INM" bidirectional line)
 					(alternate "FDCAN2_RX" bidirectional line)
-					(alternate "HRTIM1_CHC1" bidirectional line)
 					(alternate "I2C2_SMBA" bidirectional line)
 					(alternate "I2S2_WS" bidirectional line)
 					(alternate "LPUART1_DE" bidirectional line)
@@ -1954,7 +1948,6 @@
 					(alternate "ADC3_IN5" bidirectional line)
 					(alternate "COMP5_INP" bidirectional line)
 					(alternate "FDCAN2_TX" bidirectional line)
-					(alternate "HRTIM1_CHC2" bidirectional line)
 					(alternate "I2S2_CK" bidirectional line)
 					(alternate "LPUART1_CTS" bidirectional line)
 					(alternate "OPAMP3_VINP" bidirectional line)
@@ -1989,7 +1982,6 @@
 					(alternate "ADC4_IN4" bidirectional line)
 					(alternate "COMP4_OUT" bidirectional line)
 					(alternate "COMP7_INP" bidirectional line)
-					(alternate "HRTIM1_CHD1" bidirectional line)
 					(alternate "OPAMP2_VINP" bidirectional line)
 					(alternate "OPAMP2_VINP_SEC" bidirectional line)
 					(alternate "OPAMP5_VINP" bidirectional line)
@@ -2023,7 +2015,6 @@
 					(alternate "ADC4_IN5" bidirectional line)
 					(alternate "COMP3_OUT" bidirectional line)
 					(alternate "COMP6_INM" bidirectional line)
-					(alternate "HRTIM1_CHD2" bidirectional line)
 					(alternate "I2S2_SD" bidirectional line)
 					(alternate "OPAMP5_VINM" bidirectional line)
 					(alternate "OPAMP5_VINM0" bidirectional line)
@@ -2052,8 +2043,6 @@
 						)
 					)
 					(alternate "COMP6_OUT" bidirectional line)
-					(alternate "HRTIM1_CHF1" bidirectional line)
-					(alternate "HRTIM1_EEV10" bidirectional line)
 					(alternate "I2C4_SCL" bidirectional line)
 					(alternate "I2S2_MCK" bidirectional line)
 					(alternate "TIM3_CH1" bidirectional line)
@@ -2079,7 +2068,6 @@
 					(alternate "ADC5_IN1" bidirectional line)
 					(alternate "COMP7_OUT" bidirectional line)
 					(alternate "FDCAN3_RX" bidirectional line)
-					(alternate "HRTIM1_CHA1" bidirectional line)
 					(alternate "I2C2_SDA" bidirectional line)
 					(alternate "I2C3_SCL" bidirectional line)
 					(alternate "I2S2_MCK" bidirectional line)
@@ -2114,7 +2102,6 @@
 					(alternate "DAC2_EXTI9" bidirectional line)
 					(alternate "DAC3_EXTI9" bidirectional line)
 					(alternate "DAC4_EXTI9" bidirectional line)
-					(alternate "HRTIM1_CHA2" bidirectional line)
 					(alternate "I2C2_SCL" bidirectional line)
 					(alternate "I2C3_SMBA" bidirectional line)
 					(alternate "I2S3_MCK" bidirectional line)
@@ -2148,7 +2135,6 @@
 					(alternate "DAC2_EXTI10" bidirectional line)
 					(alternate "DAC3_EXTI10" bidirectional line)
 					(alternate "DAC4_EXTI10" bidirectional line)
-					(alternate "HRTIM1_CHB1" bidirectional line)
 					(alternate "I2C2_SMBA" bidirectional line)
 					(alternate "SAI1_D1" bidirectional line)
 					(alternate "SAI1_SD_A" bidirectional line)
@@ -2181,7 +2167,6 @@
 					(alternate "ADC2_EXTI11" bidirectional line)
 					(alternate "COMP1_OUT" bidirectional line)
 					(alternate "FDCAN1_RX" bidirectional line)
-					(alternate "HRTIM1_CHB2" bidirectional line)
 					(alternate "I2S2_SD" bidirectional line)
 					(alternate "SPI2_MOSI" bidirectional line)
 					(alternate "TIM1_BKIN2" bidirectional line)
@@ -2211,7 +2196,6 @@
 					)
 					(alternate "COMP2_OUT" bidirectional line)
 					(alternate "FDCAN1_TX" bidirectional line)
-					(alternate "HRTIM1_FLT1" bidirectional line)
 					(alternate "I2S_CKIN" bidirectional line)
 					(alternate "TIM16_CH1" bidirectional line)
 					(alternate "TIM1_CH2N" bidirectional line)
@@ -2312,7 +2296,6 @@
 					(alternate "ADC1_EXTI15" bidirectional line)
 					(alternate "ADC2_EXTI15" bidirectional line)
 					(alternate "FDCAN3_TX" bidirectional line)
-					(alternate "HRTIM1_FLT2" bidirectional line)
 					(alternate "I2C1_SCL" bidirectional line)
 					(alternate "I2S3_WS" bidirectional line)
 					(alternate "SPI1_NSS" bidirectional line)
@@ -2347,7 +2330,6 @@
 					(alternate "DAC2_EXTI10" bidirectional line)
 					(alternate "DAC3_EXTI10" bidirectional line)
 					(alternate "DAC4_EXTI10" bidirectional line)
-					(alternate "HRTIM1_FLT6" bidirectional line)
 					(alternate "I2S3_CK" bidirectional line)
 					(alternate "SPI3_SCK" bidirectional line)
 					(alternate "TIM8_CH1N" bidirectional line)
@@ -2373,7 +2355,6 @@
 					)
 					(alternate "ADC1_EXTI11" bidirectional line)
 					(alternate "ADC2_EXTI11" bidirectional line)
-					(alternate "HRTIM1_EEV2" bidirectional line)
 					(alternate "I2C3_SDA" bidirectional line)
 					(alternate "SPI3_MISO" bidirectional line)
 					(alternate "TIM8_CH2N" bidirectional line)
@@ -2402,8 +2383,6 @@
 					(alternate "ADC5_EXTI3" bidirectional line)
 					(alternate "CRS_SYNC" bidirectional line)
 					(alternate "FDCAN3_RX" bidirectional line)
-					(alternate "HRTIM1_EEV9" bidirectional line)
-					(alternate "HRTIM1_SCOUT" bidirectional line)
 					(alternate "I2S3_CK" bidirectional line)
 					(alternate "SAI1_SCK_B" bidirectional line)
 					(alternate "SPI1_SCK" bidirectional line)
@@ -2433,7 +2412,6 @@
 						)
 					)
 					(alternate "FDCAN3_TX" bidirectional line)
-					(alternate "HRTIM1_EEV7" bidirectional line)
 					(alternate "SAI1_MCLK_B" bidirectional line)
 					(alternate "SPI1_MISO" bidirectional line)
 					(alternate "SPI3_MISO" bidirectional line)
@@ -2463,7 +2441,6 @@
 						)
 					)
 					(alternate "FDCAN2_RX" bidirectional line)
-					(alternate "HRTIM1_EEV6" bidirectional line)
 					(alternate "I2C1_SMBA" bidirectional line)
 					(alternate "I2C3_SDA" bidirectional line)
 					(alternate "I2S3_SD" bidirectional line)
@@ -2496,8 +2473,6 @@
 					)
 					(alternate "COMP4_OUT" bidirectional line)
 					(alternate "FDCAN2_TX" bidirectional line)
-					(alternate "HRTIM1_EEV4" bidirectional line)
-					(alternate "HRTIM1_SCIN" bidirectional line)
 					(alternate "LPTIM1_ETR" bidirectional line)
 					(alternate "SAI1_FS_B" bidirectional line)
 					(alternate "TIM16_CH1N" bidirectional line)
@@ -2526,7 +2501,6 @@
 						)
 					)
 					(alternate "COMP3_OUT" bidirectional line)
-					(alternate "HRTIM1_EEV3" bidirectional line)
 					(alternate "I2C1_SDA" bidirectional line)
 					(alternate "I2C4_SDA" bidirectional line)
 					(alternate "LPTIM1_IN2" bidirectional line)
@@ -2557,7 +2531,6 @@
 					)
 					(alternate "COMP1_OUT" bidirectional line)
 					(alternate "FDCAN1_RX" bidirectional line)
-					(alternate "HRTIM1_EEV8" bidirectional line)
 					(alternate "I2C1_SCL" bidirectional line)
 					(alternate "SAI1_CK1" bidirectional line)
 					(alternate "SAI1_MCLK_A" bidirectional line)
@@ -2590,7 +2563,6 @@
 					(alternate "DAC3_EXTI9" bidirectional line)
 					(alternate "DAC4_EXTI9" bidirectional line)
 					(alternate "FDCAN1_TX" bidirectional line)
-					(alternate "HRTIM1_EEV5" bidirectional line)
 					(alternate "I2C1_SDA" bidirectional line)
 					(alternate "IR_OUT" bidirectional line)
 					(alternate "SAI1_D2" bidirectional line)
@@ -3478,7 +3450,7 @@
 		)
 		(uuid "87c6fdb7-5515-458b-ad77-a60f9e9ce353")
 	)
-	(text "J6: 2.54 mm pads for debugging only, Nucleo ST-LINK CN4 order\n(VDD, SWCLK, GND, SWDIO, NRST). Not fitted: hand-solder a header if needed."
+	(text "J6: 1.27 mm SMD pads for debugging only, Nucleo ST-LINK CN4 order\n(VDD, SWCLK, GND, SWDIO, NRST). Not fitted: solder wires or a 1.27 mm header if needed."
 		(exclude_from_sim no)
 		(at 25.4 218.44 0)
 		(effects
@@ -3533,20 +3505,8 @@
 		(uuid "45b1559f-83bf-4b7b-8786-9ad1b5e0b0f5")
 	)
 	(no_connect
-		(at 187.96 149.86)
-		(uuid "56cc5bd1-839f-48f4-9b7b-7f0a0bb9e427")
-	)
-	(no_connect
-		(at 187.96 154.94)
-		(uuid "5976ca47-f87e-44ce-a151-6d3cefa6d19c")
-	)
-	(no_connect
 		(at 187.96 134.62)
 		(uuid "a90fe05f-3316-42c0-b5ba-8d0d13f479c4")
-	)
-	(no_connect
-		(at 187.96 121.92)
-		(uuid "b7454c84-22a6-43f2-bfe2-d0ce2a1749cd")
 	)
 	(no_connect
 		(at 187.96 119.38)
@@ -4058,16 +4018,6 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 165.1) (xy 180.34 165.1)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5c23fcf4-2f1d-4eb6-9144-8f9a5ae578b9")
-	)
-	(wire
-		(pts
 			(xy 113.03 220.98) (xy 110.49 220.98)
 		)
 		(stroke
@@ -4195,16 +4145,6 @@
 			(type default)
 		)
 		(uuid "970a4c96-439d-49f8-8b9a-cfe465e0985f")
-	)
-	(wire
-		(pts
-			(xy 223.52 119.38) (xy 231.14 119.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9727a93c-e9f3-44ed-aa53-fa7eff7764ef")
 	)
 	(wire
 		(pts
@@ -4418,26 +4358,6 @@
 	)
 	(wire
 		(pts
-			(xy 223.52 116.84) (xy 231.14 116.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c09ffabb-d455-455c-8357-bc55efa1aea0")
-	)
-	(wire
-		(pts
-			(xy 187.96 170.18) (xy 180.34 170.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c13fa398-424d-454e-b2d0-ba46bf163f27")
-	)
-	(wire
-		(pts
 			(xy 121.92 44.45) (xy 121.92 46.99)
 		)
 		(stroke
@@ -4618,16 +4538,6 @@
 	)
 	(wire
 		(pts
-			(xy 187.96 157.48) (xy 180.34 157.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e5cc6492-44a1-4364-93b4-c40726f96826")
-	)
-	(wire
-		(pts
 			(xy 365.76 46.99) (xy 365.76 44.45)
 		)
 		(stroke
@@ -4655,16 +4565,6 @@
 			(type default)
 		)
 		(uuid "ef97be7c-5399-4681-88ee-9bacb9160d75")
-	)
-	(wire
-		(pts
-			(xy 223.52 114.3) (xy 231.14 114.3)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f2b33982-8831-4c4b-9acf-4b45a2659951")
 	)
 	(wire
 		(pts
@@ -5096,7 +4996,7 @@
 		)
 		(uuid "febb209b-80a7-48aa-8650-83b93a50ea9c")
 	)
-	(hierarchical_label "INHC"
+	(hierarchical_label "INHA"
 		(shape output)
 		(at 231.14 127 0)
 		(effects
@@ -5129,18 +5029,7 @@
 		)
 		(uuid "071caf2f-b60a-4bd3-b081-dfd1449b5a25")
 	)
-	(hierarchical_label "DRV_SDO"
-		(shape input)
-		(at 231.14 116.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "184d5ec0-c117-4e6f-a766-83e7bfed0396")
-	)
-	(hierarchical_label "INHA"
+	(hierarchical_label "INHC"
 		(shape output)
 		(at 231.14 121.92 0)
 		(effects
@@ -5151,18 +5040,7 @@
 		)
 		(uuid "1aeb7ace-1f25-4f80-afa9-28fabf21da00")
 	)
-	(hierarchical_label "ENC_CS"
-		(shape output)
-		(at 180.34 170.18 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "234be163-ec6b-47df-99f3-f52c8381d01a")
-	)
-	(hierarchical_label "ENC_MOSI"
+	(hierarchical_label "DRV_SDI"
 		(shape output)
 		(at 180.34 152.4 180)
 		(effects
@@ -5195,18 +5073,7 @@
 		)
 		(uuid "4c32db2a-7597-4570-afbd-96b85339bbf1")
 	)
-	(hierarchical_label "DRV_SCLK"
-		(shape output)
-		(at 231.14 114.3 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "4e329bcf-0245-4cd8-9e78-a59136590630")
-	)
-	(hierarchical_label "INLC"
+	(hierarchical_label "INLA"
 		(shape output)
 		(at 180.34 177.8 180)
 		(effects
@@ -5217,7 +5084,7 @@
 		)
 		(uuid "5890d149-f945-48e5-afda-e60ba0bd8c2f")
 	)
-	(hierarchical_label "ENC_SCK"
+	(hierarchical_label "DRV_SCLK"
 		(shape output)
 		(at 180.34 124.46 180)
 		(effects
@@ -5228,29 +5095,7 @@
 		)
 		(uuid "5a765f1d-e0fc-4109-8c85-e0e8f080cd41")
 	)
-	(hierarchical_label "DRV_nFAULT"
-		(shape input)
-		(at 180.34 165.1 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "745b1f95-d531-478f-a5bb-8f7506de0186")
-	)
-	(hierarchical_label "DRV_SDI"
-		(shape output)
-		(at 231.14 119.38 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "8f3dfecf-b986-4868-9a2a-f9f382cc93ee")
-	)
-	(hierarchical_label "DRV_EN"
+	(hierarchical_label "ENC_CS"
 		(shape output)
 		(at 180.34 167.64 180)
 		(effects
@@ -5283,7 +5128,7 @@
 		)
 		(uuid "94ef0197-7dff-45a2-aa9e-3e2630b6a690")
 	)
-	(hierarchical_label "CAN_TX"
+	(hierarchical_label "DRV_nSCS"
 		(shape output)
 		(at 231.14 139.7 0)
 		(effects
@@ -5293,17 +5138,6 @@
 			(justify left)
 		)
 		(uuid "989895c1-61ea-4df6-b580-11188b57dca5")
-	)
-	(hierarchical_label "DRV_nSCS"
-		(shape output)
-		(at 180.34 157.48 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "9bd2a07d-f7fe-4d1a-8ce1-4e22f2860882")
 	)
 	(hierarchical_label "CAN_STB"
 		(shape output)
@@ -5316,7 +5150,7 @@
 		)
 		(uuid "9c3d537e-6e27-4977-8553-99b6aadbf99d")
 	)
-	(hierarchical_label "INLA"
+	(hierarchical_label "INLC"
 		(shape output)
 		(at 180.34 172.72 180)
 		(effects
@@ -5327,7 +5161,7 @@
 		)
 		(uuid "b8d14d27-4eb2-4769-88fb-35b74159506f")
 	)
-	(hierarchical_label "ENC_MISO"
+	(hierarchical_label "DRV_SDO"
 		(shape input)
 		(at 180.34 127 180)
 		(effects
@@ -6879,7 +6713,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
+		(property "Footprint" "foc_controller:SWD_Pads_1x05_P1.27mm_SMD"
 			(at 40.64 200.66 0)
 			(hide yes)
 			(show_name no)
@@ -9625,7 +9459,7 @@
 		)
 	)
 	(symbol
-		(lib_id "MCU_ST_STM32G4:STM32G474CEUx")
+		(lib_id "MCU_ST_STM32G4:STM32G473CEUx")
 		(at 205.74 139.7 0)
 		(unit 1)
 		(body_style 1)
@@ -9646,7 +9480,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "STM32G474CEU6"
+		(property "Value" "STM32G473CEU6"
 			(at 213.36 184.15 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9668,7 +9502,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.st.com/resource/en/datasheet/stm32g474ce.pdf"
+		(property "Datasheet" "https://www.st.com/resource/en/datasheet/stm32g473ce.pdf"
 			(at 205.74 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -9689,7 +9523,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C1235412"
+		(property "LCSC" "C1342773"
 			(at 208.28 144.7799 0)
 			(hide yes)
 			(show_name no)
@@ -9701,7 +9535,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "STM32G474CEU6"
+		(property "MPN" "STM32G473CEU6"
 			(at 208.28 144.7799 0)
 			(hide yes)
 			(show_name no)
@@ -11438,6 +11272,93 @@
 				)
 			)
 		)
+	)
+	(wire
+		(pts
+			(xy 180.34 149.86) (xy 187.96 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "656fce7b-ad7b-469e-b3b5-4f37dcbba2cc")
+	)
+	(hierarchical_label "CAN_TX"
+		(shape output)
+		(at 180.34 149.86 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c4892932-04b6-455f-8a20-77967dc64018")
+	)
+	(wire
+		(pts
+			(xy 180.34 154.94) (xy 187.96 154.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8887cc55-2c7a-4eec-9f1e-f82bca2497da")
+	)
+	(hierarchical_label "DRV_nFAULT"
+		(shape input)
+		(at 180.34 154.94 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "ad3d25a1-d472-425b-808e-33b5b08971b4")
+	)
+	(no_connect
+		(at 187.96 157.48)
+		(uuid "d28b5c01-d086-4f73-8b85-712f363f84a8")
+	)
+	(no_connect
+		(at 187.96 165.1)
+		(uuid "75f8ad86-97c1-4165-8ad9-173105e1a323")
+	)
+	(wire
+		(pts
+			(xy 187.96 121.92) (xy 180.34 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "425ed915-bc6c-4b77-a11d-adc8c97f1b41")
+	)
+	(hierarchical_label "DRV_EN"
+		(shape output)
+		(at 180.34 121.92 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b67892e0-572e-4cbf-96cf-f9f9e7c1d8a9")
+	)
+	(no_connect
+		(at 187.96 170.18)
+		(uuid "95802483-3224-45f6-9f2c-aaa8d3a6d258")
+	)
+	(no_connect
+		(at 223.52 114.3)
+		(uuid "437a68ef-22c2-44ad-a54d-29f5587efd3c")
+	)
+	(no_connect
+		(at 223.52 116.84)
+		(uuid "e100a199-818c-4faa-87de-d2dfbe35fb0c")
+	)
+	(no_connect
+		(at 223.52 119.38)
+		(uuid "01c4ef68-1f63-419d-a3a7-dde8bad6bd39")
 	)
 	(sheet_instances
 		(path "/"

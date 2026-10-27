@@ -60,10 +60,10 @@ Every fault below disables outputs (motor coasts), latches, and blocks motion co
 
 ### Daisy chain
 - FR34. Each board has power-in, power-out, bus-in, bus-out connectors. Power and bus pass straight through the board; a failed or unpowered node never cuts off downstream nodes.
-- FR35. Power pass-through rated 15 A DC continuous per board (720 W at 48 V). User keeps summed downstream average bus draw ≤ 15 A; larger arms split into multiple chains.
+- FR35. Power pass-through rated 10 A DC continuous per board (480 W at 48 V). User keeps summed downstream average bus draw ≤ 10 A; larger arms split into multiple chains.
 - FR36. Chain supports 8 nodes over 2 m total cable.
 - FR37. Host exchanges with every node at 1 kHz: setpoint out; position, speed, phase current, bus voltage, bus current, board temperature, fault status back.
-- FR38. Each board has a 120 Ω CAN termination resistor enabled by an on-board slide switch. User switches it on at the first and last board of the chain only.
+- FR38. No CAN termination on the board. The chain is terminated off-board with a split terminator (about 120 Ω) at each end: in the host adapter lead at the first board, and in a plug-in terminator in the last board's bus-out connector.
 - FR39. A node that stops responding is detectable by the host within 10 ms (10 missed cyclic replies).
 - FR40. No on-board inrush limiting. Chain powered through one external anti-spark or precharge switch at the supply; boards connected and disconnected only with the chain unpowered. Reverse polarity prevented by keyed connectors, not circuitry.
 
@@ -95,7 +95,7 @@ Every fault below disables outputs (motor coasts), latches, and blocks motion co
 
 ## Non-Functional Requirements
 - NFR1. Size: board 45 × 45 mm, height ≤ 15 mm including connectors. Does not overhang a 5010-class motor (about 58 mm OD).
-- NFR2. Mounting: encoder IC at board center on the motor-facing side, magnet-to-IC gap per IC spec (about 1 to 2 mm). 4 × M3 holes in the board corners, independent of the motor's hole pattern; the actuator's standoffs set the board-to-motor spacing (magnet gap and the clearance under the connector edge).
+- NFR2. Mounting: encoder IC at board center on the motor-facing side, magnet-to-IC gap per IC spec (about 1 to 2 mm). 4 × M2.5 holes in the board corners, independent of the motor's hole pattern; the actuator's standoffs set the board-to-motor spacing (magnet gap and the clearance under the connector edge).
 - NFR3. Connectors: all on one board edge, opposite the motor phase terminals and power stage, so every cable leaves the controller from one end. Side facing away from the motor: power IN, power OUT. Motor-facing side: CAN IN under power IN, USB-C, CAN OUT under power OUT, in that order. Motor phase pads side by side on the opposite edge, between the two corner holes.
 - NFR4. Cost: ≤ US$80 per board including parts and fab assembly at qty 10, excluding motor and magnet.
 - NFR5. Build: first run 10 boards, assembled by a PCB fab service.
