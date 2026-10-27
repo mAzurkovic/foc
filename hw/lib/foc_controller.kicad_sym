@@ -330,18 +330,18 @@
 			)
 		)
 	)
-  (symbol "XT30PW-F"
+  (symbol "XT30PW-M"
 		(exclude_from_sim no) (in_bom yes) (on_board yes)
 		(property "Reference" "J" (at -7.62 10.16 0) (effects (font (size 1.27 1.27)) (justify left)))
-		(property "Value" "XT30PW-F" (at -7.62 12.70 0) (effects (font (size 1.27 1.27)) (justify left)))
-		(property "Footprint" "foc_controller:CONN-TH_XT30PW-F-1" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "Value" "XT30PW-M" (at -7.62 12.70 0) (effects (font (size 1.27 1.27)) (justify left)))
+		(property "Footprint" "foc_controller:CONN-TH_XT30PW-M-1" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
-		(symbol "XT30PW-F_0_1"
+		(symbol "XT30PW-M_0_1"
 			(rectangle (start -7.62 3.81) (end 7.62 -3.81)
 				(stroke (width 0.254) (type default)) (fill (type background)))
 		)
-		(symbol "XT30PW-F_1_1"
+		(symbol "XT30PW-M_1_1"
 			(pin passive line
 				(at 10.16 1.27 180)
 				(length 2.54)
@@ -1344,7 +1344,7 @@
 					)
 				)
 			)
-			(pin output line
+			(pin tri_state line
 				(at -12.7 5.08 0)
 				(length 2.54)
 				(name "MISO"

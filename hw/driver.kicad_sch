@@ -1518,7 +1518,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "DRV8353S external parts (SLVSDY6A Table 21, Fig. 63):\nC18 VM 0.1 uF VM-rated (bulk on Power sheet provides >= 10 uF)\nC19 VCP to VDRAIN 1 uF 16 V+     C20 CPH-CPL 47 nF VDRAIN-rated\nC21 VGLS 1 uF 16 V+     C22 DVDD 1 uF 6.3 V+     C23 VREF 0.1 uF\nR6 nFAULT 10k, R7 SDO 1k pull-ups to 3.3 V (open drain, Fig. 63).\nInternal: nSCS 50k pull-up to DVDD (5 V): MCU pin must be FT (PB7).\nENABLE, INHx/INLx, SCLK, SDI have 100k pull-downs: bridge off in MCU reset.\nVDRAIN: route to the high-side MOSFET drains. VREF = MCU 3.3 V (ratiometric ADC).\nIdle = all INHx/INLx low (ENABLE low = sleep, registers reset)."
+	(text "DRV8353S external parts (SLVSDY6A Table 21, Fig. 63):\nC18 VM 0.1 uF VM-rated (bulk on Power sheet provides >= 10 uF)\nC19 VCP to VDRAIN 1 uF 16 V+     C20 CPH-CPL 47 nF VDRAIN-rated\nC21 VGLS 1 uF 16 V+     C22 DVDD 1 uF 6.3 V+     C23 VREF 0.1 uF\nR6 nFAULT 10k, R7 SDO 1k pull-ups to 3.3 V (open drain, Fig. 63).\nInternal: nSCS 50k pull-up to DVDD (5 V): MCU pin must be FT (PA15).\nENABLE, INHx/INLx, SCLK, SDI have 100k pull-downs: bridge off in MCU reset.\nVDRAIN: route to the high-side MOSFET drains. VREF = MCU 3.3 V (ratiometric ADC).\nIdle = all INHx/INLx low (ENABLE low = sleep, registers reset)."
 		(exclude_from_sim no)
 		(at 22.86 236.22 0)
 		(effects
@@ -4551,6 +4551,215 @@
 			(project "foc_controller"
 				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/114a6df9-ba32-495c-a887-4cc1990c8360"
 					(reference "#PWRDRI03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 139.7 196.85) (xy 139.7 194.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b981a221-fa0a-4e45-9948-3f858b12f0df")
+	)
+	(wire
+		(pts
+			(xy 139.7 204.47) (xy 139.7 207.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5ea46727-2d29-48d7-900d-31ad1c04e656")
+	)
+	(hierarchical_label "DRV_nSCS"
+		(shape output)
+		(at 139.7 207.01 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "86dcf174-9b13-433e-90ce-74ae5e2da951")
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 139.7 194.31 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "20f09018-90e4-434a-b25c-4cd1a01281c0")
+		(property "Reference" "#PWRDRI13"
+			(at 139.7 190.5 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 139.7 189.23 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 139.7 194.31 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 139.7 194.31 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 139.7 194.31 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1437dc62-f18e-45c2-9327-cb346f96171f")
+		)
+		(instances
+			(project "foc_controller"
+				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/114a6df9-ba32-495c-a887-4cc1990c8360"
+					(reference "#PWRDRI13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 139.7 200.66 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "75ba0ea4-8f8f-4f30-9894-7dba4e198138")
+		(property "Reference" "R25"
+			(at 142.24 199.39 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k 1%"
+			(at 142.24 201.93 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 137.922 200.66 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 139.7 200.66 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 139.7 200.66 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25744"
+			(at 142.24 205.7399 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "MPN" "0402WGF1002TCE"
+			(at 142.24 205.7399 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "1"
+			(uuid "46564f44-6080-4c7d-8e42-caad15a2f0fc")
+		)
+		(pin "2"
+			(uuid "b420ae1a-da11-47b4-b81c-890b48ff18f8")
+		)
+		(instances
+			(project "foc_controller"
+				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/114a6df9-ba32-495c-a887-4cc1990c8360"
+					(reference "R25")
 					(unit 1)
 				)
 			)

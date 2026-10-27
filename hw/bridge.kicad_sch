@@ -1305,7 +1305,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "Shunts R8-R10, 1 mOhm 2512: NT1-NT6 net ties make the Kelvin taps; route x_SENSE_P/N\nas a pair from the shunt pads straight to DRV8353S SPx/SNx. 1 mOhm x gain 20 = 20 mV/A.\nMOSFETs: 80 V >= 1.5 x 54 V hard trip. Qg 74 nC: 3 x Qg x 20 kHz = 4.4 mA < 15 mA VCP budget.\nTH1 against the MOSFETs: power-stage temperature for current derating and trip. J3-J5: 2.0 mm plated holes for the motor wires."
+	(text "Shunts R8-R10, 1 mOhm 1206 (Stackpole HCS1206, 2 W): NT1-NT6 net ties make the Kelvin taps; route x_SENSE_P/N\nas a pair from the shunt pads straight to DRV8353S SPx/SNx. 1 mOhm x gain 20 = 20 mV/A.\nMOSFETs: 80 V >= 1.5 x 54 V hard trip. Qg 74 nC: 3 x Qg x 20 kHz = 4.4 mA < 15 mA VCP budget.\nTH1 against the MOSFETs: power-stage temperature for current derating and trip. J3-J5: 2.0 mm plated holes for the motor wires."
 		(exclude_from_sim no)
 		(at 101.6 210.82 0)
 		(effects
@@ -3206,7 +3206,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1m 1% 3W"
+		(property "Value" "1m 1% 2W"
 			(at 66.04 161.29 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3217,7 +3217,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+		(property "Footprint" "foc_controller:R_1206_Shunt_HCS1206"
 			(at 61.722 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -3248,7 +3248,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2903470"
+		(property "LCSC" "C4087826"
 			(at 66.04 165.0999 0)
 			(hide yes)
 			(show_name no)
@@ -3260,7 +3260,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "HoJLR2512-3W-1mR-1%"
+		(property "MPN" "HCS1206FT1L00"
 			(at 66.04 165.0999 0)
 			(hide yes)
 			(show_name no)
@@ -3459,7 +3459,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1m 1% 3W"
+		(property "Value" "1m 1% 2W"
 			(at 299.72 161.29 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3470,7 +3470,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+		(property "Footprint" "foc_controller:R_1206_Shunt_HCS1206"
 			(at 295.402 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -3501,7 +3501,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2903470"
+		(property "LCSC" "C4087826"
 			(at 299.72 165.0999 0)
 			(hide yes)
 			(show_name no)
@@ -3513,7 +3513,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "HoJLR2512-3W-1mR-1%"
+		(property "MPN" "HCS1206FT1L00"
 			(at 299.72 165.0999 0)
 			(hide yes)
 			(show_name no)
@@ -3939,7 +3939,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1m 1% 3W"
+		(property "Value" "1m 1% 2W"
 			(at 182.88 161.29 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -3950,7 +3950,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
+		(property "Footprint" "foc_controller:R_1206_Shunt_HCS1206"
 			(at 178.562 160.02 90)
 			(hide yes)
 			(show_name no)
@@ -3981,7 +3981,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2903470"
+		(property "LCSC" "C4087826"
 			(at 182.88 165.0999 0)
 			(hide yes)
 			(show_name no)
@@ -3993,7 +3993,7 @@
 				(justify left)
 			)
 		)
-		(property "MPN" "HoJLR2512-3W-1mR-1%"
+		(property "MPN" "HCS1206FT1L00"
 			(at 182.88 165.0999 0)
 			(hide yes)
 			(show_name no)

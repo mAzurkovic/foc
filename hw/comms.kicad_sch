@@ -2407,7 +2407,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "TCAN3413: 100 nF on VCC (C41) and VIO (C42) (SLLSFS8A 8.4).\nSTB has an internal pull-up (standby): the MCU drives it low to talk.\nTermination R21 + SW1: switch on at the first and last board only.\nJ7/J8 pin 1 CANH, 2 CANL, 3 CAN GND. R20: CAN ground pin through\n100 Ohm so it never carries chain return current. Transceiver close to J7/J8."
+	(text "TCAN3413: 100 nF on VCC (C41) and VIO (C42) (SLLSFS8A 8.4).\nSTB has an internal pull-up (standby): the MCU drives it low to talk.\nNo CAN termination on the board: the chain is terminated off-board at each end.\nJ7/J8 pin 1 CANH, 2 CANL, 3 CAN GND. R20: CAN ground pin through\n100 Ohm so it never carries chain return current. Transceiver close to J7/J8."
 		(exclude_from_sim no)
 		(at 25.4 142.24 0)
 		(effects
@@ -2749,16 +2749,6 @@
 	)
 	(wire
 		(pts
-			(xy 168.91 71.12) (xy 166.37 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "917c3428-6fec-4178-8004-78a9e66711ab")
-	)
-	(wire
-		(pts
 			(xy 248.92 83.82) (xy 243.84 83.82)
 		)
 		(stroke
@@ -2776,16 +2766,6 @@
 			(type default)
 		)
 		(uuid "9af099dd-5f3a-4006-bea3-87814daa8c92")
-	)
-	(wire
-		(pts
-			(xy 176.53 71.12) (xy 179.07 71.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9b0afbde-e058-403d-840f-1e9245c7cc23")
 	)
 	(wire
 		(pts
@@ -2846,16 +2826,6 @@
 			(type default)
 		)
 		(uuid "c52f3813-feff-45d1-ba49-7cc75b1c5113")
-	)
-	(wire
-		(pts
-			(xy 162.56 99.06) (xy 160.02 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cb874543-ad2a-4b7d-a10f-68479cfd3fe9")
 	)
 	(wire
 		(pts
@@ -2926,16 +2896,6 @@
 			(type default)
 		)
 		(uuid "ec36e54e-a011-4934-b773-6b908f6ccd19")
-	)
-	(wire
-		(pts
-			(xy 182.88 99.06) (xy 185.42 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f30e4ba0-201f-4ca2-9a51-51a522759019")
 	)
 	(wire
 		(pts
@@ -3017,16 +2977,6 @@
 		)
 		(uuid "61b525a2-2746-4474-b394-258eb97e6430")
 	)
-	(label "CAN_H"
-		(at 166.37 71.12 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "6399afd2-f6f5-433b-8662-c419a0dbe468")
-	)
 	(label "CAN_GND"
 		(at 294.64 86.36 180)
 		(effects
@@ -3036,16 +2986,6 @@
 			(justify right bottom)
 		)
 		(uuid "6a9cfff7-1165-445f-ac8c-69077e7d2f9c")
-	)
-	(label "CAN_TERM"
-		(at 179.07 71.12 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "889d79a5-8fc4-4387-82d8-9694be4ab457")
 	)
 	(label "CAN_H"
 		(at 294.64 81.28 180)
@@ -3096,26 +3036,6 @@
 			(justify left bottom)
 		)
 		(uuid "c280d0a3-51c0-4a2f-967a-2b84e3e33939")
-	)
-	(label "CAN_TERM"
-		(at 160.02 99.06 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "c5878bb2-7719-4656-8902-ce4b2ab11bbd")
-	)
-	(label "CAN_L"
-		(at 185.42 99.06 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "e9285e86-6784-4713-bf1f-1425e827c5a3")
 	)
 	(label "USB_CC1"
 		(at 132.08 222.25 90)
@@ -4225,107 +4145,6 @@
 		)
 	)
 	(symbol
-		(lib_id "foc_controller:1.27-1PTPPT")
-		(at 172.72 99.06 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "6b145e50-24ee-4570-bf38-9ff28529689d")
-		(property "Reference" "SW1"
-			(at 172.72 95.25 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "TERM"
-			(at 172.72 102.87 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "foc_controller:SW-SMD_1.27-1P-TPPT"
-			(at 172.72 91.44 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 172.72 99.06 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 172.72 99.06 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C6386918"
-			(at 175.26 104.1399 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "MPN" "1.27-1P TPPT"
-			(at 175.26 104.1399 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "2"
-			(uuid "1940dbd1-7748-419a-af01-10c62ff327bd")
-		)
-		(pin "1"
-			(uuid "3f6d6706-9340-4e67-b857-c2c56018b64c")
-		)
-		(instances
-			(project "foc_controller"
-				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/54234469-6ff5-4cf8-9289-b79c93d7bfe3"
-					(reference "SW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 63.5 238.76 0)
 		(unit 1)
@@ -5214,107 +5033,6 @@
 			(project "foc_controller"
 				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/54234469-6ff5-4cf8-9289-b79c93d7bfe3"
 					(reference "R20")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 172.72 71.12 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "cbf201df-5098-48f9-9eb0-eb7c4d331a96")
-		(property "Reference" "R21"
-			(at 172.72 67.31 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "120 1%"
-			(at 172.72 74.93 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 170.942 71.12 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 172.72 71.12 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 172.72 71.12 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C22787"
-			(at 175.26 76.1999 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "MPN" "0603WAF1200T5E"
-			(at 175.26 76.1999 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "1"
-			(uuid "b9ac4464-db71-4cbf-be96-950115fc5875")
-		)
-		(pin "2"
-			(uuid "ee2553d8-a948-4e5a-b2cd-680c7318f477")
-		)
-		(instances
-			(project "foc_controller"
-				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/54234469-6ff5-4cf8-9289-b79c93d7bfe3"
-					(reference "R21")
 					(unit 1)
 				)
 			)
