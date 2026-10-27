@@ -4,8 +4,8 @@ Generated from KiCad's own netlist export (`kicad-cli sch export netlist`), not 
 
 ## Status
 - ERC: 0 violations (`tools/render hw/foc_controller.kicad_pro`), 1 exclusion (owner approved 2026-10-24, note in the .kicad_pro): pin_to_pin U3.27 SDO (open collector) with U5.3 MISO (tri-state) on DRV_SDO, the intended shared SPI bus (design D19). The exclusion is keyed to the marker position and both pin UUIDs: moving U3 on the driver sheet brings the warning back.
-- 118 components. Test points cut to TP4 (GND) only; the other rails and signals are probed at component pads. One DNP: J6 SWD pads (debug only, not fitted). The RC snubber pads were removed on 2026-10-19 (ringing handled by a tight hot loop in layout and DRV8353S IDRIVE) and R/C references renumbered to close the gap.
-- Every BOM part has an LCSC number, and every one is in stock in JLCPCB's assembly library (checked 2026-10-19 against JLC's own stock, not LCSC's). Mechanical items carry none and are excluded from the BOM: H1-H4 mounting holes, TP4, J3-J5 motor holes, J6, JP1, NT1-NT6.
+- 118 components. Test points cut to one GND pad (TP1, renamed from TP4); the other rails and signals are probed at component pads. One DNP: J6 SWD pads (debug only, not fitted). The RC snubber pads were removed on 2026-10-19 (ringing handled by a tight hot loop in layout and DRV8353S IDRIVE) and R/C references renumbered to close the gap.
+- Every BOM part has an LCSC number, and every one is in stock in JLCPCB's assembly library (checked 2026-10-19 against JLC's own stock, not LCSC's). Mechanical items carry none and are excluded from the BOM: H1-H4 mounting holes, TP1, J3-J5 motor holes, J6, JP1, NT1-NT6.
 - Polarized parts verified from the netlist: D1 K = BUCK_SW, A = GND; D2/D3 A = +5V_BUCK / +5V_USB, K = +5V; D4 anodes from R12/R13; Q1/Q3/Q5 D = VBUS, Q2/Q4/Q6 S = shunt.
 
 ## Pin cross-check (datasheet function, net, required parts)

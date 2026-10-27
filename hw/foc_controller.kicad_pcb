@@ -330,9 +330,10 @@
 		(at 136.76 144.4)
 		(descr "Soldered wire connection, for a single 2 mm² wire, reinforced insulation, conductor diameter 2mm, outer diameter 3.9mm, size source Multi-Contact FLEXI-xV 2.0 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=11), bend radius 3 times outer diameter")
 		(tags "connector wire 2sqmm")
-		(property "Reference" "C"
+		(property "Reference" "J5"
 			(at -3.26 0 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "850e425e-e933-4f57-b412-75f444803af6")
 			(effects
 				(font
@@ -421,6 +422,17 @@
 			(fill no)
 			(layer "F.Fab")
 			(uuid "95c1d01b-27f6-4f92-bac5-c0b65225c9dc")
+		)
+		(fp_text user "C"
+			(at -3.26 0 0)
+			(layer "F.SilkS")
+			(uuid "b0389cb3-2e36-4bbe-86ac-25f473f95e96")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.2)
+				)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 0)
@@ -14239,9 +14251,10 @@
 		(at 124.9 144.4)
 		(descr "Soldered wire connection, for a single 2 mm² wire, reinforced insulation, conductor diameter 2mm, outer diameter 3.9mm, size source Multi-Contact FLEXI-xV 2.0 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=11), bend radius 3 times outer diameter")
 		(tags "connector wire 2sqmm")
-		(property "Reference" "B"
+		(property "Reference" "J4"
 			(at -3.4 0 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "df07b37f-5647-4469-a3f1-40cae128a5f0")
 			(effects
 				(font
@@ -14330,6 +14343,17 @@
 			(fill no)
 			(layer "F.Fab")
 			(uuid "55a90954-563a-4a1d-a51a-8a906c8f4649")
+		)
+		(fp_text user "B"
+			(at -3.4 0 0)
+			(layer "F.SilkS")
+			(uuid "1f0c5c17-b332-41a4-b33b-0a21cc9df2ea")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.2)
+				)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 0)
@@ -15895,7 +15919,7 @@
 		(at 105.708 140.2659)
 		(descr "SMD pad as test Point, diameter 1.0mm")
 		(tags "test point SMD pad")
-		(property "Reference" "TP4"
+		(property "Reference" "TP1"
 			(at -1.995803 -0.000001 90)
 			(layer "F.SilkS")
 			(uuid "a0727d35-85fe-4990-867c-230a0d5935ab")
@@ -17323,9 +17347,10 @@
 		(at 113.04 144.4)
 		(descr "Soldered wire connection, for a single 2 mm² wire, reinforced insulation, conductor diameter 2mm, outer diameter 3.9mm, size source Multi-Contact FLEXI-xV 2.0 (https://www.staubli.com/content/dam/ecs/catalogs-brochures/TM/CAB-Main-11014119-en.pdf#page=11), bend radius 3 times outer diameter")
 		(tags "connector wire 2sqmm")
-		(property "Reference" "A"
+		(property "Reference" "J3"
 			(at -3.54 0 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "41b04795-3b52-41ef-8aa2-e420120a0753")
 			(effects
 				(font
@@ -17414,6 +17439,17 @@
 			(fill no)
 			(layer "F.Fab")
 			(uuid "40487812-f0a8-4aca-90f1-b8e75922462c")
+		)
+		(fp_text user "A"
+			(at -3.54 0 0)
+			(layer "F.SilkS")
+			(uuid "72aa53d6-e79d-4620-b0a0-308b686bdef3")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.2)
+				)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 0)
@@ -18149,9 +18185,10 @@
 		(at 104.6 126.5 -90)
 		(descr "Five bare SMD pads, 1.27 mm pitch, for an SWD probe: hand-solder wires or a 1.27 mm SMD header. No paste: not fitted at assembly.")
 		(tags "swd debug pads")
-		(property "Reference" "DBUG"
+		(property "Reference" "J6"
 			(at -4.44325 -0.9 0)
 			(layer "B.SilkS")
+			(hide yes)
 			(uuid "8420295a-f0a2-4100-bc40-de72743d7f41")
 			(effects
 				(font
@@ -18229,6 +18266,18 @@
 			(fill no)
 			(layer "B.CrtYd")
 			(uuid "0cc454c1-0069-49a7-84dd-aa354ed755be")
+		)
+		(fp_text user "DBUG"
+			(at -4.44325 -0.9 0)
+			(layer "B.SilkS")
+			(uuid "5086b774-0367-406b-a190-15f597b1c6b2")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+				(justify mirror)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 270)
@@ -18881,9 +18930,10 @@
 		(at 136.72 105.7)
 		(descr "JST GH series connector, SM03B-GHS-TB (http://www.jst-mfg.com/product/pdf/eng/eGH.pdf)")
 		(tags "connector JST GH horizontal")
-		(property "Reference" "CAN2"
+		(property "Reference" "J8"
 			(at -4.22 2.8 0)
 			(layer "B.SilkS")
+			(hide yes)
 			(uuid "89c1da58-6854-43ef-98e2-734fb9c16826")
 			(effects
 				(font
@@ -19262,6 +19312,18 @@
 			)
 			(layer "B.Fab")
 			(uuid "635c3359-0c90-4521-bdee-abfc633a5056")
+		)
+		(fp_text user "CAN2"
+			(at -4.22 2.8 0)
+			(layer "B.SilkS")
+			(uuid "a946bbc4-2b66-4872-a730-3b463e9fad2b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+				(justify mirror)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 180)
@@ -24955,9 +25017,10 @@
 		(at 113.28 105.7)
 		(descr "JST GH series connector, SM03B-GHS-TB (http://www.jst-mfg.com/product/pdf/eng/eGH.pdf)")
 		(tags "connector JST GH horizontal")
-		(property "Reference" "CAN1"
+		(property "Reference" "J7"
 			(at 3.72 2.8 0)
 			(layer "B.SilkS")
+			(hide yes)
 			(uuid "232bc948-1960-424c-888a-ac12ba3f01eb")
 			(effects
 				(font
@@ -25336,6 +25399,18 @@
 			)
 			(layer "B.Fab")
 			(uuid "25813e2a-04c9-498d-ba37-fc4bb75c432c")
+		)
+		(fp_text user "CAN1"
+			(at 3.72 2.8 0)
+			(layer "B.SilkS")
+			(uuid "66fd311c-764e-42c7-ab98-5bda6b1c1a87")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+				(justify mirror)
+			)
 		)
 		(fp_text user "${REFERENCE}"
 			(at 0 0 180)

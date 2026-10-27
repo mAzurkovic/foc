@@ -5592,7 +5592,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "11f87e9b-e795-453f-adfd-7b1748c19391")
-		(property "Reference" "TP4"
+		(property "Reference" "TP1"
 			(at 342.9 206.5 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5651,7 +5651,7 @@
 		(instances
 			(project "foc_controller"
 				(path "/dc3b1c6f-161a-46e4-9985-32c8fd205458/65a7b652-5191-47ae-a7b2-084cabfd7ef7"
-					(reference "TP4")
+					(reference "TP1")
 					(unit 1)
 				)
 			)
